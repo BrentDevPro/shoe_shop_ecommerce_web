@@ -19,7 +19,7 @@ class CatalogController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('description', 'like', '%' . $search . '%');
+                  ->orWhere('description', 'like', '%' . $search . '%');
             });
         }
 
@@ -28,7 +28,12 @@ class CatalogController extends Controller
             $query->where('category_id', $request->category);
         }
 
-        // 3. Sorting
+        // 3. Brand Filter
+        if ($request->filled('brand')) {
+            $query->where('brand_id', $request->brand);
+        }
+
+        // 4. Sorting
         if ($request->filled('sort')) {
             if ($request->sort == 'price_asc') {
                 $query->orderBy('price', 'asc');
@@ -41,12 +46,18 @@ class CatalogController extends Controller
             $query->latest();
         }
 
-        $categories = Category::orderBy('name')->get();
+        // Sidebar filter data
+        $categories = Category::withCount(['products' => function($q) {
+            $q->where('is_active', true);
+        }])->orderBy('name')->get();
 
-        // Paginate and keep query strings
+        $brands = Brand::withCount(['products' => function($q) {
+            $q->where('is_active', true);
+        }])->orderBy('name')->get();
+
         $products = $query->paginate(9)->withQueryString();
 
-        return view('store.index', compact('products', 'categories'));
+        return view('store.index', compact('products', 'categories', 'brands'));
     }
 
     public function show($slug)

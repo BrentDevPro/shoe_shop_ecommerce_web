@@ -55,7 +55,7 @@
             
             {{-- BRAND LOGO --}}
             <a class="navbar-brand fw-bold text-danger fs-4 me-lg-5" href="{{ url('/') }}">
-                <i class="bi bi-box"></i> FOOTWEAR.
+                <i class="bi bi-box"></i> SHOE SHOP.
             </a>
 
             {{-- MOBILE MENU TOGGLE --}}
@@ -65,10 +65,10 @@
 
             <div class="collapse navbar-collapse" id="storeNav">
                 
-                {{-- CENTER: SEARCH BAR --}}
-                <form action="{{ route('store.index') }}" method="GET" class="d-flex mx-auto my-3 my-lg-0 w-100" style="max-width: 500px;">
+{{-- CENTER: SEARCH BAR --}}
+                <form id="navSearchForm" action="{{ route('store.index') }}" method="GET" class="d-flex mx-auto my-3 my-lg-0 w-100" style="max-width: 500px;">
                     <div class="input-group shadow-sm rounded-pill overflow-hidden border border-light-subtle">
-                        <input type="text" name="search" class="form-control search-input border-0 bg-light px-4 py-2" placeholder="Search shoes, brands..." value="{{ request('search') }}">
+                        <input type="text" id="navSearchInput" name="search" class="form-control search-input border-0 bg-light px-4 py-2" placeholder="Search shoes, brands..." value="{{ request('search') }}">
                         <button class="btn btn-light bg-light border-0 px-4 text-dark" type="submit">
                             <i class="bi bi-search"></i>
                         </button>
