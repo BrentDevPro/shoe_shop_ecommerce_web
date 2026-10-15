@@ -26,7 +26,7 @@
                                 </div>
                                 <div class="text-end">
                                     <p class="fw-bold fs-5 mb-2">₱{{ number_format($details['price'] * $details['quantity'], 2) }}</p>
-                                    <form action="{{ route('cart.remove') }}" method="POST">
+                                    <form action="{{ route('cart.remove') }}" method="POST" onsubmit="return confirm('Remove this item from your shopping bag?')">
                                         @csrf
                                         <input type="hidden" name="variant_id" value="{{ $id }}">
                                         <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">Remove</button>

@@ -20,6 +20,13 @@
         <span class="text-muted small">Store / {{ $product->category->name ?? 'Category' }} / <span class="text-dark fw-bold">{{ $product->name }}</span></span>
     </div>
 
+    @if(session('success'))
+        <div class="alert alert-success rounded-4" role="status">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger rounded-4" role="alert">{{ session('error') }}</div>
+    @endif
+
     {{-- White Card Container --}}
     <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
         <div class="row g-5 align-items-center">

@@ -4,22 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    // Remove or comment out this line:
-    // protected $redirectTo = '/home';
-
-    protected function redirectTo()
+    protected function authenticated(Request $request, $user)
     {
-        if (Auth::user()->role === 'admin') {
-            return route('admin.dashboard');
-        }
-
-        return route('store.index');
+        return redirect()->route($user->role === 'admin' ? 'admin.dashboard' : 'store.index');
     }
 
     public function __construct()
