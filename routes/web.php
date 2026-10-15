@@ -39,6 +39,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/orders', [OrderHistoryController::class, 'index'])->name('orders.index');
+
+    Route::get('/orders/{order}', [OrderHistoryController::class, 'show'])->name('orders.show');
 });
 
 // Admin Routes (Requires login AND admin role)
