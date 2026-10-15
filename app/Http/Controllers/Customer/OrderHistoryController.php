@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderHistoryController extends Controller
 {
-    // 1. The new Master List View
     public function index()
     {
-        $orders = Order::where('user_id', Auth::id())
+        // We MUST include 'with()' so the system fetches the pictures for the list view
+        $orders = Order::with('items.variant.product')
+            ->where('user_id', Auth::id())
             ->latest()
             ->paginate(10);
 

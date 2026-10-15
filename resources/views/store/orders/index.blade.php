@@ -1,6 +1,12 @@
 @extends('layouts.store')
 
 @section('content')
+<style>
+    .order-card { transition: all 0.2s ease; border: 1px solid transparent; }
+    .order-card:hover { border-color: #dee2e6; transform: translateY(-3px); }
+    .product-img-stack { width: 75px; height: 75px; object-fit: cover; border: 3px solid #fff; }
+</style>
+
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-5">
         <div>
@@ -12,58 +18,106 @@
         </a>
     </div>
 
-    <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden p-4">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th class="text-uppercase small fw-bold text-muted py-3">Order ID</th>
-                        <th class="text-uppercase small fw-bold text-muted py-3">Date</th>
-                        <th class="text-uppercase small fw-bold text-muted py-3">Total</th>
-                        <th class="text-uppercase small fw-bold text-muted py-3">Status</th>
-                        <th class="text-uppercase small fw-bold text-muted py-3 text-end">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($orders as $order)
-                        <tr>
-                            <td class="fw-bold text-dark font-monospace">#{{ $order->tracking_number }}</td>
-                            <td class="text-muted">{{ $order->created_at->format('M d, Y') }}</td>
-                            <td class="fw-bold text-danger">₱{{ number_format($order->total_amount, 2) }}</td>
-                            <td>
-                                @if($order->status == 'pending')
-                                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fw-medium">Pending</span>
-                                @elseif($order->status == 'paid')
-                                    <span class="badge bg-info text-dark rounded-pill px-3 py-2 fw-medium">Processing</span>
-                                @elseif($order->status == 'shipped')
-                                    <span class="badge bg-primary rounded-pill px-3 py-2 fw-medium">Shipped</span>
-                                @elseif($order->status == 'completed')
-                                    <span class="badge bg-success rounded-pill px-3 py-2 fw-medium">Delivered</span>
-                                @elseif($order->status == 'cancelled')
-                                    <span class="badge bg-danger rounded-pill px-3 py-2 fw-medium">Cancelled</span>
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            @forelse($orders as $order)
+                <div class="card order-card shadow-sm rounded-4 bg-white mb-4 overflow-hidden">
+                    
+                    {{-- Header: Order Meta Info --}}
+                    <div class="card-header bg-light border-bottom-0 py-3 px-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <div>
+                            <span class="badge bg-dark px-3 py-2 rounded-pill font-monospace mb-2 mb-md-0">ORDER #{{ $order->tracking_number }}</span>
+                            <span class="text-muted ms-md-2 small fw-medium d-block d-md-inline">Placed on {{ $order->created_at->format('M d, Y') }}</span>
+                        </div>
+                        <div class="text-md-end">
+                            <span class="text-muted small">Total Amount:</span>
+                            <span class="fw-bold text-danger ms-1 fs-5">₱{{ number_format($order->total_amount, 2) }}</span>
+                        </div>
+                    </div>
+
+                    {{-- Body: Visual Product List & Action --}}
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
+                            
+                            {{-- Left: Overlapping Product Images --}}
+                            <div class="d-flex align-items-center flex-wrap gap-3">
+                                @php
+                                    $items = $order->items ?? collect();
+                                    $displayItems = $items->take(3); // Show max 3 images
+                                    $remainingCount = $items->count() > 3 ? $items->count() - 3 : 0;
+                                @endphp
+
+                                @if($items->count() > 0)
+                                    <div class="d-flex position-relative">
+                                        @foreach($displayItems as $item)
+                                            {{-- Safe check for deleted products --}}
+                                            @if($item->variant && $item->variant->product)
+                                                <div class="rounded-circle shadow-sm bg-white overflow-hidden position-relative" style="width: 75px; height: 75px; z-index: {{ 10 - $loop->index }}; margin-right: -20px;">
+                                                    <img src="{{ $item->variant->product->image_path }}" alt="Shoe" class="product-img-stack w-100 h-100 rounded-circle">
+                                                </div>
+                                            @else
+                                                <div class="rounded-circle shadow-sm bg-light d-flex align-items-center justify-content-center text-muted position-relative" style="width: 75px; height: 75px; z-index: {{ 10 - $loop->index }}; margin-right: -20px; border: 3px solid #fff;">
+                                                    <i class="bi bi-box-seam"></i>
+                                                </div>
+                                            @endif
+                                        @endforeach
+
+                                        {{-- If they ordered more than 3 items, show a +X badge --}}
+                                        @if($remainingCount > 0)
+                                            <div class="rounded-circle shadow-sm bg-dark d-flex align-items-center justify-content-center text-white fw-bold position-relative" style="width: 75px; height: 75px; z-index: 1; border: 3px solid #fff;">
+                                                +{{ $remainingCount }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                    
+                                    <div class="ms-md-4 mt-2 mt-md-0">
+                                        <p class="fw-bold text-dark mb-1">
+                                            {{ $items->first()->variant->product->name ?? 'Footwear Item' }}
+                                            @if($items->count() > 1) 
+                                                <span class="text-muted fw-normal">and {{ $items->count() - 1 }} other item(s)</span> 
+                                            @endif
+                                        </p>
+                                        <p class="text-muted small mb-0">{{ $items->sum('quantity') }} items in this shipment</p>
+                                    </div>
+                                @else
+                                    <p class="text-muted mb-0"><i class="bi bi-info-circle me-1"></i> Order details unavailable.</p>
                                 @endif
-                            </td>
-                            <td class="text-end">
-                                <a href="{{ route('orders.show', $order->id) }}" class="btn btn-dark btn-sm rounded-pill px-4 py-2 fw-medium shadow-sm">
+                            </div>
+
+                            {{-- Right: Status Badge & Button --}}
+                            <div class="d-flex flex-column align-items-md-end gap-3 min-vw-25">
+                                @if($order->status == 'pending')
+                                    <span class="badge bg-warning text-dark rounded-pill px-4 py-2 fw-medium"><i class="bi bi-hourglass-split me-1"></i> Pending</span>
+                                @elseif($order->status == 'paid')
+                                    <span class="badge bg-info text-dark rounded-pill px-4 py-2 fw-medium"><i class="bi bi-gear-fill me-1"></i> Processing</span>
+                                @elseif($order->status == 'shipped')
+                                    <span class="badge bg-primary rounded-pill px-4 py-2 fw-medium"><i class="bi bi-truck me-1"></i> Shipped</span>
+                                @elseif($order->status == 'completed')
+                                    <span class="badge bg-success rounded-pill px-4 py-2 fw-medium"><i class="bi bi-house-door-fill me-1"></i> Delivered</span>
+                                @elseif($order->status == 'cancelled')
+                                    <span class="badge bg-danger rounded-pill px-4 py-2 fw-medium"><i class="bi bi-x-circle-fill me-1"></i> Cancelled</span>
+                                @endif
+                                
+                                <a href="{{ route('orders.show', $order->id) }}" class="btn btn-dark rounded-pill px-4 py-2 fw-bold shadow-sm w-100">
                                     Track Order
                                 </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center py-5">
-                                <i class="bi bi-box-seam text-muted mb-3 d-block" style="font-size: 3rem;"></i>
-                                <h5 class="fw-bold text-dark">No orders found</h5>
-                                <p class="text-muted">You haven't placed any orders yet.</p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="mt-4 d-flex justify-content-center">
-            {{ $orders->links() }}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center py-5 my-5">
+                    <i class="bi bi-box-seam text-muted mb-3 d-block" style="font-size: 4rem;"></i>
+                    <h4 class="fw-bold text-dark">No orders found</h4>
+                    <p class="text-muted mb-4">You haven't placed any orders yet. Start exploring our collection!</p>
+                    <a href="{{ route('store.index') }}" class="btn btn-dark btn-lg rounded-pill px-5">Go to Shop</a>
+                </div>
+            @endforelse
+
+            <div class="mt-5 d-flex justify-content-center">
+                {{ $orders->links() }}
+            </div>
         </div>
     </div>
 </div>

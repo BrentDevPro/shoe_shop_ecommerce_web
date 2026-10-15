@@ -26,48 +26,139 @@
     <!-- Filter Bar -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div class="flex-grow-1" style="max-width: 300px;">
-            <input type="text" class="form-control rounded-pill bg-white border-light-subtle" placeholder="Search shoe name or brand...">
+            <input type="text" id="searchInput" class="form-control rounded-pill bg-white border-light-subtle" placeholder="Search shoe name or brand..." value="{{ request('search') }}">
         </div>
 
-        <div class="d-flex gap-2 overflow-auto pb-2 pb-md-0">
-            <button class="btn btn-dark rounded-pill px-4">All Shoes</button>
+        <div class="d-flex gap-2 overflow-auto pb-2 pb-md-0" id="categoryFilters">
+            <button class="btn {{ !request('category') ? 'btn-dark' : 'btn-outline-secondary bg-white text-dark' }} rounded-pill px-4 filter-btn border-light-subtle" data-category="">All Shoes</button>
             @foreach($categories as $category)
-            <button class="btn btn-outline-secondary rounded-pill px-4 border-light-subtle bg-white text-dark">{{ $category->name }}</button>
+            <button class="btn {{ request('category') == $category->id ? 'btn-dark' : 'btn-outline-secondary bg-white text-dark' }} rounded-pill px-4 border-light-subtle filter-btn" data-category="{{ $category->id }}">{{ $category->name }}</button>
             @endforeach
         </div>
 
         <div>
-            <select class="form-select rounded-pill bg-white border-light-subtle w-auto">
-                <option>Sort by: Featured</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
+            <select id="sortSelect" class="form-select rounded-pill bg-white border-light-subtle w-auto">
+                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Sort by: Featured</option>
+                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
+                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
             </select>
         </div>
     </div>
 
-    <!-- Product Grid -->
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach($products as $product)
-        <div class="col">
-            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden product-card bg-white">
-                <div class="product-image-container">
-                    <img src="{{ $product->image_path }}" alt="{{ $product->name }}">
-                </div>
-                <div class="card-body p-4">
-                    <p class="text-muted small fw-bold mb-1 text-uppercase">{{ $product->category->name ?? 'Uncategorized' }}</p>
-                    <h5 class="card-title fw-bold mb-2">{{ $product->name }}</h5>
-                    <p class="card-text text-muted small text-truncate">{{ $product->description }}</p>
+    <!-- Showing Products Text -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="text-muted small fw-medium mb-0" id="showingText">
+            Showing {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }} of {{ $products->total() }} products
+        </p>
+    </div>
 
-                    <div class="d-flex justify-content-between align-items-center mt-4">
-                        <span class="fs-5 fw-bold">₱{{ number_format($product->price, 2) }}</span>
-                        <!-- In Phase 7, this will link to the product detail page -->
-                        <a href="{{ route('store.product', $product->slug) }}" class="btn btn-outline-dark rounded-pill px-3 py-1 btn-sm fw-medium">View Options</a>
+    <!-- Product Grid Wrapper (For AJAX Replacement) -->
+    <div id="productGridWrapper">
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+            @forelse($products as $product)
+            <div class="col">
+                {{-- Make the entire card clickable by wrapping it in an anchor tag --}}
+                <a href="{{ route('store.product', $product->slug) }}" class="text-decoration-none text-dark d-block h-100">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden product-card bg-white" style="transition: transform 0.2s; cursor: pointer;">
+                        <div class="product-image-container">
+                            <img src="{{ $product->image_path }}" alt="{{ $product->name }}">
+                        </div>
+                        <div class="card-body p-4">
+                            <p class="text-muted small fw-bold mb-1 text-uppercase">{{ $product->category->name ?? 'Uncategorized' }}</p>
+                            <h5 class="card-title fw-bold mb-2">{{ $product->name }}</h5>
+                            <p class="card-text text-muted small text-truncate">{{ $product->description }}</p>
+
+                            <div class="d-flex justify-content-between align-items-center mt-4">
+                                <span class="fs-5 fw-bold">₱{{ number_format($product->price, 2) }}</span>
+                                <span class="btn btn-outline-dark rounded-pill px-3 py-1 btn-sm fw-medium">View Options</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
+            @empty
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-search text-muted mb-3 d-block" style="font-size: 3rem;"></i>
+                <h4 class="fw-bold text-dark">No products found</h4>
+                <p class="text-muted">Try adjusting your search or category filters.</p>
+            </div>
+            @endforelse
         </div>
-        @endforeach
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center">
+            {{ $products->links() }}
+        </div>
     </div>
 
 </div>
+
+<!-- Real-Time AJAX Search & Filter Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const sortSelect = document.getElementById('sortSelect');
+    const gridWrapper = document.getElementById('productGridWrapper');
+    const showingText = document.getElementById('showingText');
+
+    let debounceTimer;
+
+    function fetchProducts() {
+        // Build the URL with current parameters
+        let url = new URL(window.location.href);
+        
+        if (searchInput.value) url.searchParams.set('search', searchInput.value);
+        else url.searchParams.delete('search');
+
+        const activeBtn = document.querySelector('.filter-btn.btn-dark');
+        const category = activeBtn ? activeBtn.dataset.category : '';
+        if (category) url.searchParams.set('category', category);
+        else url.searchParams.delete('category');
+
+        url.searchParams.set('sort', sortSelect.value);
+
+        // Fetch new data quietly in the background
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(response => response.text())
+            .then(html => {
+                // Parse the returned HTML and extract just the grid and text
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                gridWrapper.innerHTML = doc.getElementById('productGridWrapper').innerHTML;
+                showingText.innerHTML = doc.getElementById('showingText').innerHTML;
+                
+                // Update the browser URL without reloading
+                window.history.pushState({}, '', url);
+            });
+    }
+
+    // Listen for typing in the search bar (with a 300ms delay so it doesn't fire on every single keystroke)
+    searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(fetchProducts, 300);
+    });
+
+    // Listen for sort dropdown changes
+    sortSelect.addEventListener('change', fetchProducts);
+
+    // Listen for category button clicks
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Toggle active styling
+            filterBtns.forEach(b => {
+                b.classList.remove('btn-dark');
+                b.classList.add('btn-outline-secondary', 'bg-white', 'text-dark');
+            });
+            this.classList.remove('btn-outline-secondary', 'bg-white', 'text-dark');
+            this.classList.add('btn-dark');
+            
+            fetchProducts();
+        });
+    });
+});
+</script>
 @endsection

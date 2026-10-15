@@ -6,23 +6,56 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Brand;
 
 class CatalogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::all();
-        // Eager load category and brand to prevent N+1 query performance issues
-        $products = Product::with(['category', 'brand'])->where('is_active', true)->latest()->get();
-        
-        return view('store.index', compact('categories', 'products'));
+        $query = Product::with(['category', 'brand'])->where('is_active', true);
+
+        // 1. Text Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
+        // 2. Category Filter
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        // 3. Sorting
+        if ($request->filled('sort')) {
+            if ($request->sort == 'price_asc') {
+                $query->orderBy('price', 'asc');
+            } elseif ($request->sort == 'price_desc') {
+                $query->orderBy('price', 'desc');
+            } else {
+                $query->latest();
+            }
+        } else {
+            $query->latest();
+        }
+
+        $categories = Category::orderBy('name')->get();
+
+        // Paginate and keep query strings
+        $products = $query->paginate(9)->withQueryString();
+
+        return view('store.index', compact('products', 'categories'));
     }
 
     public function show($slug)
     {
-        // Fetch the product, along with its available variants (sizes/colors)
-        $product = Product::with('variants')->where('slug', $slug)->where('is_active', true)->firstOrFail();
-        
+        $product = Product::with(['category', 'brand', 'images', 'variants'])
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
         return view('store.show', compact('product'));
     }
 }
