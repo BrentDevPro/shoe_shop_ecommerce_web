@@ -55,7 +55,7 @@
             
             {{-- BRAND LOGO --}}
             <a class="navbar-brand fw-bold text-danger fs-4 me-lg-5" href="{{ url('/') }}">
-                <i class="bi bi-box"></i> SHOE SHOP.
+                <i class="bi bi-shop"></i> SHOE SHOP.
             </a>
 
             {{-- MOBILE MENU TOGGLE --}}
@@ -88,7 +88,7 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark d-flex align-items-center gap-2 fw-medium px-lg-3" href="{{ route('orders.index') }}" title="Orders & Tracking">
                             <i class="bi bi-truck fs-5"></i>
-                            <span>Orders & Tracking</span>
+                            <span>My Orders</span>
                             @if($orderCount > 0)
                                 <span class="badge bg-danger rounded-pill">{{ $orderCount }}</span>
                             @endif

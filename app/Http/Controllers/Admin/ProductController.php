@@ -13,10 +13,51 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'brand'])->latest()->get();
-        return view('admin.products.index', compact('products'));
+        $query = Product::with(['brand', 'category', 'variants']);
+
+        // Search by Product Name
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter by Brand
+        if ($request->filled('brand_id')) {
+            $query->where('brand_id', $request->brand_id);
+        }
+
+        // Filter by Category
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Paginate results (10 items per page)
+        $products = $query->latest()->paginate(10)->withQueryString();
+
+        // Calculate KPI Metrics for Admin Dashboard Cards
+        $totalProducts = Product::count();
+        $allVariants = \App\Models\ProductVariant::all();
+        $totalStock = $allVariants->sum('stock_quantity');
+        $lowStockCount = Product::whereHas('variants', function ($q) {
+            $q->havingRaw('SUM(stock_quantity) <= 5 AND SUM(stock_quantity) > 0');
+        })->count();
+        $outOfStockCount = Product::whereDoesntHave('variants', function ($q) {
+            $q->where('stock_quantity', '>', 0);
+        })->count();
+
+        $brands = Brand::all();
+        $categories = Category::all();
+
+        return view('admin.products.index', compact(
+            'products',
+            'brands',
+            'categories',
+            'totalProducts',
+            'totalStock',
+            'lowStockCount',
+            'outOfStockCount'
+        ));
     }
 
     public function create()
@@ -39,9 +80,9 @@ class ProductController extends Controller
         ]);
 
         $images = $request->file('images');
-        
+
         // Take the FIRST image out of the array and make it the Main Image
-        $mainImage = array_shift($images); 
+        $mainImage = array_shift($images);
 
         $product = Product::create([
             'name' => $request->name,
@@ -114,13 +155,13 @@ class ProductController extends Controller
         if (Storage::disk('public')->exists($product->image_path)) {
             Storage::disk('public')->delete($product->image_path);
         }
-        
+
         foreach ($product->images as $img) {
             if (Storage::disk('public')->exists($img->image_path)) {
                 Storage::disk('public')->delete($img->image_path);
             }
         }
-        
+
         $product->delete();
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
     }
@@ -132,7 +173,7 @@ class ProductController extends Controller
             Storage::disk('public')->delete($image->image_path);
         }
         $image->delete();
-        
+
         return back()->with('success', 'Gallery image removed.');
     }
 }

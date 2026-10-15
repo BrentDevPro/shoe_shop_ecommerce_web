@@ -33,7 +33,22 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+/**
+     * Check if user is an administrator
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 
+    /**
+     * Check if user is a customer
+     */
+    public function isCustomer(): bool
+    {
+        return $this->role === 'customer';
+    }
+    
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);

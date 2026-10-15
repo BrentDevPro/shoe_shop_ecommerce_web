@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\AdminRegisterController;
 use App\Http\Controllers\Customer\CatalogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -24,6 +25,9 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 
+
+Route::get('/admin/register', [AdminRegisterController::class, 'showRegistrationForm'])->name('admin.register');
+Route::post('/admin/register', [AdminRegisterController::class, 'register'])->name('admin.register.submit');
 // Auth Routes (Login, Register, Password Reset provided by laravel/ui)
 Auth::routes();
 

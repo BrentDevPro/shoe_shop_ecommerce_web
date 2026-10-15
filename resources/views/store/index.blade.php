@@ -121,13 +121,13 @@
     <div class="hero-banner rounded-4 p-5 mb-5 text-white position-relative shadow-sm">
         <div class="row align-items-center">
             <div class="col-md-7 position-relative z-1">
-                <span class="badge bg-danger mb-3 px-3 py-2 rounded-pill">2026 COLLECTION</span>
-                <h1 class="display-4 fw-bold mb-3">Step Into Excellence</h1>
+                <span class="badge bg-danger mb-3 px-3 py-2 rounded-pill">THE LATEST COLLECTION</span>
+                <h1 class="display-4 fw-bold mb-3">Find Your Next Favorite Pair</h1>
                 <p class="lead text-light opacity-75 mb-4">
-                    Engineered comfort meets modern street aesthetics. Discover original performance sneakers and basketball releases.
+                    From everyday essentials to standout sneakers, find the right fit for wherever the day takes you.
                 </p>
                 <a href="#productGridWrapper" id="shopFeaturedBtn" class="btn btn-light text-dark rounded-pill px-4 py-2 fw-semibold shadow-sm">
-                    Shop Featured Shoes &rarr;
+                    Shop the Collection &rarr;
                 </a>
             </div>
             <div class="col-md-5 d-none d-md-block text-end opacity-25">

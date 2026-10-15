@@ -16,10 +16,10 @@ class LoginController extends Controller
     protected function redirectTo()
     {
         if (Auth::user()->role === 'admin') {
-            return '/admin';
+            return route('admin.dashboard');
         }
 
-        return '/home';
+        return route('store.index');
     }
 
     public function __construct()
