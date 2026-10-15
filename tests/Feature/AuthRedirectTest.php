@@ -79,4 +79,22 @@ class AuthRedirectTest extends TestCase
         $response->assertRedirect(route('admin.dashboard'));
         $this->assertAuthenticatedAs($admin);
     }
+
+    public function test_authenticated_customer_visiting_login_is_redirected_to_storefront(): void
+    {
+        $customer = User::factory()->create(['role' => 'customer']);
+
+        $this->actingAs($customer)
+            ->get('/login')
+            ->assertRedirect(route('store.index'));
+    }
+
+    public function test_authenticated_admin_visiting_login_is_redirected_to_admin_dashboard(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->get('/login')
+            ->assertRedirect(route('admin.dashboard'));
+    }
 }
