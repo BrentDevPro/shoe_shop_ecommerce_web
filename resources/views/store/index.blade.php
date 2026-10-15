@@ -32,6 +32,87 @@
         transition: none !important;
         animation: none !important;
     }
+
+    /* Strict fix for Laravel pagination styling & SVG sizing */
+    .pagination-wrapper {
+        background: #ffffff;
+        border-radius: 1rem;
+        padding: 0.85rem 1.25rem;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.03);
+    }
+
+    .pagination-wrapper nav[role="navigation"] {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .pagination {
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.4rem !important;
+        list-style: none !important;
+    }
+
+    /* General Page Link Buttons */
+    .pagination .page-item .page-link,
+    .pagination .page-item span {
+        border-radius: 50rem !important;
+        border: 1px solid #e2e8f0 !important;
+        color: #212529 !important;
+        min-width: 42px !important;
+        height: 42px !important;
+        padding: 0 0.85rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        transition: all 0.2s ease !important;
+        background-color: #ffffff !important;
+        box-shadow: none !important;
+        text-decoration: none !important;
+    }
+
+    /* Enlarged Icon Styling for Previous & Next Buttons */
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:first-child span,
+    .pagination .page-item:last-child .page-link,
+    .pagination .page-item:last-child span {
+        min-width: 44px !important;
+        height: 44px !important;
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        padding: 0 !important;
+    }
+
+    .pagination .page-item .page-link:hover {
+        background-color: #f1f5f9 !important;
+        color: #000000 !important;
+        border-color: #cbd5e1 !important;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #212529 !important;
+        border-color: #212529 !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
+    }
+
+    .pagination .page-item.disabled .page-link,
+    .pagination .page-item.disabled span {
+        background-color: #f8f9fa !important;
+        color: #cbd5e1 !important;
+        border-color: #f1f5f9 !important;
+        opacity: 0.6 !important;
+        pointer-events: none !important;
+    }
 </style>
 
 <div class="container">
@@ -45,7 +126,7 @@
                 <p class="lead text-light opacity-75 mb-4">
                     Engineered comfort meets modern street aesthetics. Discover original performance sneakers and basketball releases.
                 </p>
-                <a href="#" class="btn btn-light text-dark rounded-pill px-4 py-2 fw-semibold">
+                <a href="#productGridWrapper" id="shopFeaturedBtn" class="btn btn-light text-dark rounded-pill px-4 py-2 fw-semibold shadow-sm">
                     Shop Featured Shoes &rarr;
                 </a>
             </div>
@@ -63,11 +144,9 @@
             <div class="card border-0 shadow-sm rounded-4 p-4 bg-white sticky-top" style="top: 100px; z-index: 10;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-sliders me-2"></i>Filters</h5>
-                    @if(request('search') || request('category') || request('brand'))
-                        <a href="{{ route('store.index') }}" class="btn btn-link text-danger p-0 text-decoration-none small fw-semibold">
-                            Reset All
-                        </a>
-                    @endif
+                    <button type="button" id="resetFiltersBtn" class="btn btn-link text-danger p-0 text-decoration-none small fw-semibold border-0 bg-transparent {{ (request('search') || request('category') || request('brand')) ? '' : 'd-none' }}">
+                        Reset All
+                    </button>
                 </div>
 
                 {{-- Sidebar Search Input --}}
@@ -160,9 +239,9 @@
                 </div>
             </div>
 
-            {{-- Product Grid Wrapper (Targeted by AJAX) --}}
-            <div id="productGridWrapper">
-                <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-5">
+            {{-- Product Grid Wrapper --}}
+            <div id="productGridWrapper" style="scroll-margin-top: 90px;">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4">
                     @forelse($products as $product)
                     <div class="col">
                         <a href="{{ route('store.product', $product->slug) }}" class="text-decoration-none text-dark d-block h-100">
@@ -184,18 +263,30 @@
                         </a>
                     </div>
                     @empty
-                    <div class="col-12 text-center py-5">
-                        <i class="bi bi-search text-muted mb-3 d-block" style="font-size: 3rem;"></i>
-                        <h4 class="fw-bold text-dark">No products found</h4>
-                        <p class="text-muted">Try adjusting your search, category, or brand filters.</p>
+                    {{-- Clean & Centered Empty State Card Layout --}}
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm rounded-4 bg-white text-center py-5 px-4 my-2">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                                <i class="bi bi-search text-muted display-6"></i>
+                            </div>
+                            <h4 class="fw-bold text-dark mb-2">No products found</h4>
+                            <p class="text-muted small mb-4">We couldn't find any footwear matching your filters. Try adjusting your search or category selection.</p>
+                            <div>
+                                <button type="button" onclick="document.getElementById('resetFiltersBtn').click()" class="btn btn-dark rounded-pill px-4 py-2 fw-medium shadow-sm">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i> Clear All Filters
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     @endforelse
                 </div>
 
-                {{-- Pagination Links --}}
-                <div class="d-flex justify-content-center">
-                    {{ $products->links() }}
+                {{-- Pagination Wrapper --}}
+                @if($products->hasPages())
+                <div class="pagination-wrapper mb-5">
+                    {{ $products->links('pagination::bootstrap-5') }}
                 </div>
+                @endif
             </div>
 
         </div>
@@ -216,13 +307,44 @@ document.addEventListener('DOMContentLoaded', function() {
     const brandLinks = document.querySelectorAll('.brand-link');
     const gridWrapper = document.getElementById('productGridWrapper');
     const showingText = document.getElementById('showingText');
+    const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+    const shopFeaturedBtn = document.getElementById('shopFeaturedBtn');
 
     let debounceTimer;
 
-    function fetchProducts() {
+    // Helper to replace text/SVG prev & next with large Bootstrap Icons
+    function formatPaginationIcons() {
+        const prevItem = document.querySelector('.pagination .page-item:first-child .page-link, .pagination .page-item:first-child span');
+        if (prevItem) {
+            prevItem.innerHTML = '<i class="bi bi-chevron-left"></i>';
+        }
+
+        const nextItem = document.querySelector('.pagination .page-item:last-child .page-link, .pagination .page-item:last-child span');
+        if (nextItem) {
+            nextItem.innerHTML = '<i class="bi bi-chevron-right"></i>';
+        }
+    }
+
+    function checkResetVisibility() {
+        const queryVal = (navSearchInput ? navSearchInput.value : searchInput.value).trim();
+        const activeCategory = document.querySelector('.category-link.active');
+        const categoryId = activeCategory ? activeCategory.dataset.category : '';
+        const activeBrand = document.querySelector('.brand-link.active');
+        const brandId = activeBrand ? activeBrand.dataset.brand : '';
+
+        if (resetFiltersBtn) {
+            if (queryVal || categoryId || brandId) {
+                resetFiltersBtn.classList.remove('d-none');
+            } else {
+                resetFiltersBtn.classList.add('d-none');
+            }
+        }
+    }
+
+    function fetchProducts(page = null) {
         let url = new URL(window.location.href);
 
-        // Prefer active text from navSearchInput or searchInput
+        // Active Search Query
         const queryVal = (navSearchInput ? navSearchInput.value : searchInput.value).trim();
         if (queryVal) url.searchParams.set('search', queryVal);
         else url.searchParams.delete('search');
@@ -245,7 +367,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (sortValue && sortValue !== 'latest') url.searchParams.set('sort', sortValue);
         else url.searchParams.delete('sort');
 
-        url.searchParams.delete('page');
+        // Page Number Handling
+        if (page) {
+            url.searchParams.set('page', page);
+        } else {
+            url.searchParams.delete('page');
+        }
+
+        checkResetVisibility();
 
         fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(response => response.text())
@@ -259,29 +388,82 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (newGrid && gridWrapper) gridWrapper.innerHTML = newGrid.innerHTML;
                 if (newShowing && showingText) showingText.innerHTML = newShowing.innerHTML;
 
+                formatPaginationIcons();
                 window.history.pushState({}, '', url);
+
+                if (page) {
+                    gridWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
     }
 
-    // Live search from Sidebar Search Input
+    // Initial Icon formatting
+    formatPaginationIcons();
+
+    // Reset All Filters Action
+    if (resetFiltersBtn) {
+        resetFiltersBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            if (searchInput) searchInput.value = '';
+            if (navSearchInput) navSearchInput.value = '';
+
+            categoryLinks.forEach(l => l.classList.remove('active'));
+            const defaultCat = document.querySelector('.category-link[data-category=""]');
+            if (defaultCat) defaultCat.classList.add('active');
+
+            brandLinks.forEach(l => l.classList.remove('active'));
+            const defaultBrand = document.querySelector('.brand-link[data-brand=""]');
+            if (defaultBrand) defaultBrand.classList.add('active');
+
+            sortOptions.forEach(opt => opt.classList.remove('bg-light', 'fw-bold'));
+            const defaultSort = document.querySelector('.sort-option[data-value="latest"]');
+            if (defaultSort) defaultSort.classList.add('bg-light', 'fw-bold');
+            if (sortDropdownLabel) sortDropdownLabel.textContent = 'Sort by: Featured';
+
+            fetchProducts();
+        });
+    }
+
+    // Shop Featured Shoes Hero Button Smooth Scroll to Product Grid
+    if (shopFeaturedBtn) {
+        shopFeaturedBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const gridTarget = document.getElementById('productGridWrapper');
+            if (gridTarget) {
+                gridTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+
+    // Intercept Pagination Clicks inside Grid Wrapper for Real-time AJAX
+    gridWrapper.addEventListener('click', function(e) {
+        const pageLink = e.target.closest('.pagination-wrapper a');
+        if (pageLink) {
+            e.preventDefault();
+            const linkUrl = new URL(pageLink.href);
+            const page = linkUrl.searchParams.get('page');
+            if (page) fetchProducts(page);
+        }
+    });
+
+    // Live search inputs
     if (searchInput) {
         searchInput.addEventListener('input', () => {
             if (navSearchInput) navSearchInput.value = searchInput.value;
             clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(fetchProducts, 300);
+            debounceTimer = setTimeout(() => fetchProducts(), 300);
         });
     }
 
-    // Live search from Navbar Search Input
     if (navSearchInput) {
         navSearchInput.addEventListener('input', () => {
             if (searchInput) searchInput.value = navSearchInput.value;
             clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(fetchProducts, 300);
+            debounceTimer = setTimeout(() => fetchProducts(), 300);
         });
     }
 
-    // Prevent full page submit on Navbar Form when on Storefront
     if (navSearchForm) {
         navSearchForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -289,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Custom Sort Dropdown Option Selection
+    // Custom Sort Selection
     sortOptions.forEach(option => {
         option.addEventListener('click', function(e) {
             e.preventDefault();
@@ -302,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Category links
+    // Category Links
     categoryLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -312,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Brand links
+    // Brand Links
     brandLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();

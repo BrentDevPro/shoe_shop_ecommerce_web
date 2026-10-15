@@ -2,9 +2,37 @@
 
 @section('content')
 <style>
-    .order-card { transition: all 0.2s ease; border: 1px solid transparent; }
-    .order-card:hover { border-color: #dee2e6; transform: translateY(-3px); }
-    .product-img-stack { width: 75px; height: 75px; object-fit: cover; border: 3px solid #fff; }
+    .order-card { 
+        transition: all 0.2s ease; 
+        border: 1px solid transparent; 
+        cursor: pointer;
+    }
+    .order-card:hover { 
+        border-color: #dee2e6; 
+        transform: translateY(-3px); 
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+    }
+    .product-img-stack { 
+        width: 75px; 
+        height: 75px; 
+        object-fit: cover; 
+        border: 3px solid #fff; 
+    }
+    .img-stack-item {
+        width: 75px;
+        height: 75px;
+        margin-right: -20px;
+    }
+    .img-stack-item:nth-child(1) { z-index: 10; }
+    .img-stack-item:nth-child(2) { z-index: 9; }
+    .img-stack-item:nth-child(3) { z-index: 8; }
+    
+    .img-stack-more {
+        width: 75px;
+        height: 75px;
+        z-index: 1;
+        border: 3px solid #fff;
+    }
 </style>
 
 <div class="container my-5">
@@ -21,7 +49,7 @@
     <div class="row">
         <div class="col-lg-10 mx-auto">
             @forelse($orders as $order)
-                <div class="card order-card shadow-sm rounded-4 bg-white mb-4 overflow-hidden">
+                <div class="card order-card shadow-sm rounded-4 bg-white mb-4 overflow-hidden" data-href="{{ route('orders.show', $order->id) }}">
                     
                     {{-- Header: Order Meta Info --}}
                     <div class="card-header bg-light border-bottom-0 py-3 px-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
@@ -52,11 +80,11 @@
                                         @foreach($displayItems as $item)
                                             {{-- Safe check for deleted products --}}
                                             @if($item->variant && $item->variant->product)
-                                                <div class="rounded-circle shadow-sm bg-white overflow-hidden position-relative" style="width: 75px; height: 75px; z-index: {{ 10 - $loop->index }}; margin-right: -20px;">
+                                                <div class="rounded-circle shadow-sm bg-white overflow-hidden position-relative img-stack-item">
                                                     <img src="{{ $item->variant->product->image_path }}" alt="Shoe" class="product-img-stack w-100 h-100 rounded-circle">
                                                 </div>
                                             @else
-                                                <div class="rounded-circle shadow-sm bg-light d-flex align-items-center justify-content-center text-muted position-relative" style="width: 75px; height: 75px; z-index: {{ 10 - $loop->index }}; margin-right: -20px; border: 3px solid #fff;">
+                                                <div class="rounded-circle shadow-sm bg-light d-flex align-items-center justify-content-center text-muted position-relative img-stack-item border border-3 border-white">
                                                     <i class="bi bi-box-seam"></i>
                                                 </div>
                                             @endif
@@ -64,7 +92,7 @@
 
                                         {{-- If they ordered more than 3 items, show a +X badge --}}
                                         @if($remainingCount > 0)
-                                            <div class="rounded-circle shadow-sm bg-dark d-flex align-items-center justify-content-center text-white fw-bold position-relative" style="width: 75px; height: 75px; z-index: 1; border: 3px solid #fff;">
+                                            <div class="rounded-circle shadow-sm bg-dark d-flex align-items-center justify-content-center text-white fw-bold position-relative img-stack-more">
                                                 +{{ $remainingCount }}
                                             </div>
                                         @endif
@@ -116,9 +144,21 @@
             @endforelse
 
             <div class="mt-5 d-flex justify-content-center">
-                {{ $orders->links() }}
+                {{ $orders->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.order-card[data-href]').forEach(function(card) {
+        card.addEventListener('click', function(e) {
+            if (!e.target.closest('a, button')) {
+                window.location.href = this.dataset.href;
+            }
+        });
+    });
+});
+</script>
 @endsection

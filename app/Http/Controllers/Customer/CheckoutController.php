@@ -87,7 +87,7 @@ class CheckoutController extends Controller
             // 4. Clear the cart and redirect
             session()->forget('cart');
 
-            return redirect()->route('home')->with('success', 'Order placed successfully! Your Tracking Number is: ' . $order->tracking_number);
+            return redirect()->route('store.index')->with('success', 'Order placed successfully! Your Tracking Number is: ' . $order->tracking_number);
 
         } catch (\Exception $e) {
             DB::rollBack();

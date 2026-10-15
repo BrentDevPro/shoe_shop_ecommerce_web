@@ -15,16 +15,16 @@
 </style>
 
 <div class="container my-5">
-    {{-- Breadcrumbs exactly as your original design --}}
+    {{-- Breadcrumbs --}}
     <div class="mb-4">
         <span class="text-muted small">Store / {{ $product->category->name ?? 'Category' }} / <span class="text-dark fw-bold">{{ $product->name }}</span></span>
     </div>
 
-    {{-- The Original White Card Container --}}
+    {{-- White Card Container --}}
     <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
         <div class="row g-5 align-items-center">
             
-            {{-- LEFT COLUMN: The new Interactive Gallery replaces the old static image --}}
+            {{-- LEFT COLUMN: Interactive Gallery --}}
             <div class="col-lg-6">
                 <div class="d-flex gap-3">
                     {{-- Vertical Thumbnails --}}
@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            {{-- RIGHT COLUMN: Your exact original product details layout --}}
+            {{-- RIGHT COLUMN: Product Details & Variant Selection --}}
             <div class="col-lg-6 ps-lg-4">
                 <h6 class="text-danger fw-bold text-uppercase tracking-wide small mb-2">{{ $product->brand->name ?? 'Brand' }}</h6>
                 <h1 class="fw-bold text-dark mb-3 display-5" style="letter-spacing: -0.03em;">{{ $product->name }}</h1>
@@ -89,7 +89,9 @@
                                 <option value="" disabled selected>Choose size & variant...</option>
                                 @if(isset($product->variants) &&$product->variants->count() > 0)
                                     @foreach($product->variants as $variant)
-                                        <option value="{{ $variant->id }}">{{ $variant->size }} - {{ $variant->color }} ({{$variant->stock }} left)</option>
+                                        <option value="{{ $variant->id }}">
+                                            {{ $variant->size }} - {{$variant->color }} ({{ $variant->stock_quantity ?? $variant->stock }} left)
+                                        </option>
                                     @endforeach
                                 @else
                                     <option value="default">Standard - Default</option>
@@ -126,11 +128,9 @@
 
     thumbnails.forEach(thumb => {
         thumb.addEventListener('click', function() {
-            // Change main image source
             mainImage.src = this.getAttribute('data-image');
-            resetZoom(); // Always reset zoom when switching pictures
+            resetZoom();
 
-            // Update active thumbnail border
             thumbnails.forEach(el => {
                 el.classList.remove('active-thumb');
                 el.classList.add('border-transparent');
