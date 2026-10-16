@@ -81,7 +81,7 @@
                                             {{-- Safe check for deleted products --}}
                                             @if($item->variant && $item->variant->product)
                                                 <div class="rounded-circle shadow-sm bg-white overflow-hidden position-relative img-stack-item">
-                                                    <img src="{{ $item->variant->product->image_path }}" alt="Shoe" class="product-img-stack w-100 h-100 rounded-circle">
+                                                    <img src="{{ $item->variant->product->image_url }}" alt="Shoe" class="product-img-stack w-100 h-100 rounded-circle">
                                                 </div>
                                             @else
                                                 <div class="rounded-circle shadow-sm bg-light d-flex align-items-center justify-content-center text-muted position-relative img-stack-item border border-3 border-white">

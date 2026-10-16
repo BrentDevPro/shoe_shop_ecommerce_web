@@ -36,13 +36,13 @@
                 <div class="d-flex gap-3">
                     {{-- Vertical Thumbnails --}}
                     <div class="d-flex flex-column gap-2" style="width: 80px;">
-                        <div class="thumbnail-wrapper active-thumb rounded-3 overflow-hidden shadow-sm gallery-thumb" data-image="{{ $product->image_path }}">
-                            <img src="{{ $product->image_path }}" alt="Thumbnail">
+                        <div class="thumbnail-wrapper active-thumb rounded-3 overflow-hidden shadow-sm gallery-thumb" data-image="{{ $product->image_url }}">
+                            <img src="{{ $product->image_url }}" alt="Thumbnail">
                         </div>
                         
                         @foreach($product->images as $galleryImg)
-                            <div class="thumbnail-wrapper rounded-3 overflow-hidden shadow-sm border-transparent gallery-thumb" data-image="{{ asset('storage/' . $galleryImg->image_path) }}">
-                                <img src="{{ asset('storage/' . $galleryImg->image_path) }}" alt="Thumbnail">
+                            <div class="thumbnail-wrapper rounded-3 overflow-hidden shadow-sm border-transparent gallery-thumb" data-image="{{ $galleryImg->image_url }}">
+                                <img src="{{ $galleryImg->image_url }}" alt="Thumbnail">
                             </div>
                         @endforeach
                     </div>
@@ -50,7 +50,7 @@
                     {{-- Large Main Image View with Zoom --}}
                     <div class="flex-grow-1 position-relative">
                         <div class="main-image-container rounded-4 shadow-sm border border-light-subtle" id="imageContainer">
-                            <img src="{{ $product->image_path }}" id="mainImage" alt="{{ $product->name }}">
+                            <img src="{{ $product->image_url }}" id="mainImage" alt="{{ $product->name }}">
                         </div>
                         
                         {{-- Zoom Controls --}}

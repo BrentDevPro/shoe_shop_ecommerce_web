@@ -122,7 +122,7 @@
                         {{-- SAFE CHECK: Verifies the product still exists in database --}}
                         @if($item->variant && $item->variant->product)
                             <div class="d-flex align-items-center gap-3">
-                                <img src="{{ $item->variant->product->image_path }}" alt="shoe" class="rounded shadow-sm" style="width: 70px; height: 70px; object-fit: cover; background-color: #fff;">
+                                <img src="{{ $item->variant->product->image_url }}" alt="shoe" class="rounded shadow-sm" style="width: 70px; height: 70px; object-fit: cover; background-color: #fff;">
                                 <div>
                                     <h6 class="fw-bold mb-0">{{ $item->variant->product->name }}</h6>
                                     <p class="text-muted small mb-0">Size: EU {{ $item->variant->size }} | Color: {{ $item->variant->color }}</p>

@@ -37,7 +37,7 @@
                 <div class="list-group list-group-flush border-top-0">
                     @foreach($order->items as $item)
                         <div class="list-group-item p-4 d-flex align-items-center gap-4 border-light-subtle">
-                            <img src="{{ $item->variant->product->image_path }}" alt="Shoe" class="rounded shadow-sm border border-light-subtle" style="width: 75px; height: 75px; object-fit: cover; background: #fbfbfb;">
+                            <img src="{{ $item->variant->product->image_url }}" alt="Shoe" class="rounded shadow-sm border border-light-subtle" style="width: 75px; height: 75px; object-fit: cover; background: #fbfbfb;">
                             <div class="flex-grow-1">
                                 <h6 class="fw-bold text-dark mb-1">{{ $item->variant->product->name }}</h6>
                                 <p class="text-muted small mb-0">Size: EU {{ $item->variant->size }} <span class="mx-1">|</span> Color: {{ $item->variant->color }}</p>

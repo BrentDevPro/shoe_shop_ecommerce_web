@@ -61,7 +61,7 @@
             <div class="d-flex align-items-center gap-3">
                 <div class="rounded-4 overflow-hidden border bg-light d-flex align-items-center justify-content-center shadow-sm" style="width: 75px; height: 75px; flex-shrink: 0;">
                     @if(isset($product->image_path) && $product->image_path)
-                        <img src="{{ asset($product->image_path) }}" alt="{{ $product->name }}" class="w-100 h-100 object-fit-cover">
+                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-100 h-100 object-fit-cover">
                     @else
                         <i class="bi bi-box-seam fs-2 text-muted"></i>
                     @endif

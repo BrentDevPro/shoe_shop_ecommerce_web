@@ -247,7 +247,7 @@
                         <a href="{{ route('store.product', $product->slug) }}" class="text-decoration-none text-dark d-block h-100">
                             <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden product-card bg-white" style="transition: transform 0.2s; cursor: pointer;">
                                 <div class="product-image-container">
-                                    <img src="{{ $product->image_path }}" alt="{{ $product->name }}">
+                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                                 </div>
                                 <div class="card-body p-4">
                                     <p class="text-muted small fw-bold mb-1 text-uppercase">{{ $product->category->name ?? 'Uncategorized' }}</p>

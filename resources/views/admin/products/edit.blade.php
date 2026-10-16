@@ -75,18 +75,18 @@
                 </div>
                 <div class="card-body p-4 text-center">
                     
-                    {{-- Display Current Images --}}
-                    <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
-                        {{-- Main Image --}}
-                        <div class="position-relative mt-2">
-                            <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-dark" style="font-size: 0.6rem;">Main</span>
-                            <img src="{{ $product->image_path }}" class="rounded-3 shadow-sm border border-primary border-2" style="width: 75px; height: 75px; object-fit: cover; background: #f8f9fa;">
-                        </div>
+                    <div id="existingImageChoices" class="d-flex flex-wrap justify-content-center gap-3 mb-3">
+                        <button type="button" class="main-image-choice btn p-0 position-relative mt-2 border border-primary border-2 bg-transparent" data-main-image-id="" aria-pressed="true" title="Set as main photo" style="width: 75px; height: 75px;">
+                            <span class="main-image-badge position-absolute top-0 start-50 translate-middle badge rounded-pill bg-dark" style="font-size: 0.6rem;">Main</span>
+                            <img src="{{ $product->image_url }}" alt="Current main product photo" class="rounded-3 shadow-sm w-100 h-100" style="object-fit: cover; background: #f8f9fa;">
+                        </button>
 
-                        {{-- Gallery Images --}}
                         @foreach($product->images as $img)
                             <div class="position-relative mt-2">
-                                <img src="{{ asset('storage/' . $img->image_path) }}" class="rounded-3 shadow-sm border border-light-subtle" style="width: 75px; height: 75px; object-fit: cover; background: #f8f9fa;">
+                                <button type="button" class="main-image-choice btn p-0 position-relative border border-light-subtle bg-transparent" data-main-image-id="{{ $img->id }}" aria-pressed="false" title="Set as main photo" style="width: 75px; height: 75px;">
+                                    <span class="main-image-badge position-absolute top-0 start-50 translate-middle badge rounded-pill bg-dark d-none" style="font-size: 0.6rem;">Main</span>
+                                    <img src="{{ $img->image_url }}" alt="Product photo" class="rounded-3 shadow-sm w-100 h-100" style="object-fit: cover; background: #f8f9fa;">
+                                </button>
                                 <button type="button" form="delete-gallery-{{ $img->id }}" onclick="if(confirm('Remove this gallery image?')) document.getElementById('delete-gallery-{{ $img->id }}').submit();" class="btn btn-danger btn-sm rounded-circle p-0 position-absolute shadow-sm d-flex align-items-center justify-content-center" style="width: 22px; height: 22px; top: -6px; right: -6px;">
                                     <i class="bi bi-x" style="font-size: 0.9rem;"></i>
                                 </button>
@@ -94,12 +94,15 @@
                         @endforeach
                     </div>
 
+                    <div id="previewContainer" class="d-flex flex-wrap justify-content-center gap-3 mb-4"></div>
+
                     <hr class="border-light-subtle my-4">
-                    
+
                     <div class="text-start">
-                        <label class="form-label fw-bold text-uppercase small text-muted tracking-wide ms-2">Add More Images</label>
-                        <input type="file" name="images[]" class="form-control rounded-pill bg-light border-0 px-3 py-2" accept="image/*" multiple>
-                        <small class="text-muted ms-2 mt-2 d-block lh-sm" style="font-size: 0.75rem;">Uploading files here will add them to your product gallery.</small>
+                        <label for="imageInput" class="form-label fw-bold text-uppercase small text-muted tracking-wide ms-2">Add Product Images</label>
+                        <input type="file" name="images[]" id="imageInput" class="form-control rounded-pill bg-light border-0 px-3 py-2" accept="image/*" multiple>
+                        <input type="hidden" name="main_image_id" id="mainImageId">
+                        <input type="hidden" name="main_image_index" id="mainImageIndex">
                     </div>
                 </div>
             </div>
@@ -133,4 +136,76 @@
         @method('DELETE')
     </form>
 @endforeach
+
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const previewContainer = document.getElementById('previewContainer');
+    const mainImageId = document.getElementById('mainImageId');
+    const mainImageIndex = document.getElementById('mainImageIndex');
+    const existingMainChoice = document.querySelector('.main-image-choice[data-main-image-id=""]');
+    let selectedMainChoice = existingMainChoice;
+    let previewUrls = [];
+
+    function selectMainImage(choice) {
+        selectedMainChoice = choice;
+
+        document.querySelectorAll('.main-image-choice, .new-image-choice').forEach((imageChoice) => {
+            const selected = imageChoice === choice;
+            imageChoice.classList.toggle('border-primary', selected);
+            imageChoice.classList.toggle('border-2', selected);
+            imageChoice.classList.toggle('border-light-subtle', !selected);
+            imageChoice.setAttribute('aria-pressed', selected ? 'true' : 'false');
+            imageChoice.querySelector('.main-image-badge').classList.toggle('d-none', !selected);
+        });
+
+        if (choice.dataset.mainImageId !== undefined) {
+            mainImageId.value = choice.dataset.mainImageId;
+            mainImageIndex.value = '';
+        } else {
+            mainImageId.value = '';
+            mainImageIndex.value = choice.dataset.mainImageIndex;
+        }
+    }
+
+    document.querySelectorAll('.main-image-choice').forEach((choice) => {
+        choice.addEventListener('click', () => selectMainImage(choice));
+    });
+
+    imageInput.addEventListener('change', (event) => {
+        previewUrls.forEach((url) => URL.revokeObjectURL(url));
+        previewUrls = [];
+        previewContainer.replaceChildren();
+        selectMainImage(existingMainChoice);
+
+        Array.from(event.target.files).forEach((file, index) => {
+            const imageUrl = URL.createObjectURL(file);
+            previewUrls.push(imageUrl);
+
+            const choice = document.createElement('button');
+            choice.type = 'button';
+            choice.className = 'new-image-choice btn p-0 position-relative mt-2 border border-light-subtle bg-transparent';
+            choice.dataset.mainImageIndex = index;
+            choice.setAttribute('aria-pressed', 'false');
+            choice.setAttribute('title', 'Set as main photo');
+            choice.style.width = '75px';
+            choice.style.height = '75px';
+
+            const badge = document.createElement('span');
+            badge.className = 'main-image-badge position-absolute top-0 start-50 translate-middle badge rounded-pill bg-dark d-none';
+            badge.style.fontSize = '0.6rem';
+            badge.textContent = 'Main';
+
+            const image = document.createElement('img');
+            image.src = imageUrl;
+            image.alt = file.name;
+            image.className = 'rounded-3 shadow-sm w-100 h-100';
+            image.style.objectFit = 'cover';
+            image.style.background = '#f8f9fa';
+
+            choice.append(badge, image);
+            choice.addEventListener('click', () => selectMainImage(choice));
+            previewContainer.append(choice);
+        });
+    });
+</script>
 @endsection

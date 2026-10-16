@@ -35,12 +35,14 @@ class ProductVariantController extends Controller
     public function update(Request $request, Product $product, ProductVariant $variant)
     {
         $request->validate([
+            'color' => 'required|string|max:255',
+            'size' => 'required|string|max:50',
             'stock_quantity' => 'required|integer|min:0',
         ]);
 
-        $variant->update(['stock_quantity' => $request->stock_quantity]);
+        $variant->update($request->only('color', 'size', 'stock_quantity'));
 
-        return back()->with('success', 'Stock updated successfully.');
+        return back()->with('success', 'Variant details updated successfully.');
     }
 
     // Delete a variant

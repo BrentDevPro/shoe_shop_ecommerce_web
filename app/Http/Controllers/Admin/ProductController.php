@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\ProductImage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -117,6 +118,9 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        $uploadedImages = $request->file('images', []);
+        $uploadedImages = is_array($uploadedImages) ? $uploadedImages : [];
+
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
@@ -124,8 +128,40 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'images' => 'nullable|array', // Unified validation
             'images.*' => 'image|max:2048',
+            'main_image_id' => [
+                'nullable',
+                'integer',
+                'prohibits:main_image_index',
+                Rule::exists('product_images', 'id')->where(fn ($query) => $query->where('product_id', $product->id)),
+            ],
+            'main_image_index' => ['nullable', 'integer', 'min:0', Rule::in(array_keys($uploadedImages))],
             'description' => 'required|string',
         ]);
+
+        $oldMainImagePath = $product->image_path;
+        $mainImageIndex = $request->filled('main_image_index')
+            ? (int) $request->input('main_image_index')
+            : null;
+
+        if ($request->filled('main_image_id')) {
+            $selectedImage = $product->images()->findOrFail($request->input('main_image_id'));
+            $product->image_path = $selectedImage->image_path;
+
+            if ($oldMainImagePath) {
+                $selectedImage->update(['image_path' => $oldMainImagePath]);
+            } else {
+                $selectedImage->delete();
+            }
+        } elseif ($mainImageIndex !== null) {
+            $product->image_path = $uploadedImages[$mainImageIndex]->store('products', 'public');
+
+            if ($oldMainImagePath) {
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $oldMainImagePath,
+                ]);
+            }
+        }
 
         $product->update([
             'name' => $request->name,
@@ -133,18 +169,20 @@ class ProductController extends Controller
             'price' => $request->price,
             'brand_id' => $request->brand_id,
             'category_id' => $request->category_id,
+            'image_path' => $product->image_path,
             'description' => $request->description,
             'is_active' => $request->has('is_active'),
         ]);
 
-        // In edit mode, any newly uploaded files are simply added to the gallery
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image_path' => $image->store('products/gallery', 'public')
-                ]);
+        foreach ($uploadedImages as $index => $image) {
+            if ($mainImageIndex !== null && $index === $mainImageIndex) {
+                continue;
             }
+
+            ProductImage::create([
+                'product_id' => $product->id,
+                'image_path' => $image->store('products/gallery', 'public')
+            ]);
         }
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');

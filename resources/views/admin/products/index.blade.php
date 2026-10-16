@@ -219,7 +219,7 @@
                         @forelse($products as $product)
                             <tr>
                                 <td class="ps-1">
-                                    <img src="{{ $product->image_path }}" alt="{{ $product->name }}" class="rounded-3 shadow-sm border border-light-subtle" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="rounded-3 shadow-sm border border-light-subtle" style="width: 50px; height: 50px; object-fit: cover;">
                                 </td>
                                 <td class="fw-bold text-dark">{{ $product->name }}</td>
                                 <td>{{ $product->brand->name ?? 'N/A' }}</td>
