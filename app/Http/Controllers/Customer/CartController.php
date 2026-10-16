@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\ProductVariant;
-use App\Models\Product;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
@@ -25,17 +24,15 @@ class CartController extends Controller
 
         $cart = session()->get('cart', []);
 
-        // If this exact variant is already in the cart, just increase the quantity
         if (isset($cart[$variant->id])) {
             $newQuantity = $cart[$variant->id]['quantity'] + $request->quantity;
-            
+
             if ($variant->stock_quantity < $newQuantity) {
                 return back()->with('error', 'Cannot add more. Stock limit reached.');
             }
-            
+
             $cart[$variant->id]['quantity'] = $newQuantity;
         } else {
-            // Otherwise, add the new item to the session cart array
             $cart[$variant->id] = [
                 'variant_id' => $variant->id,
                 'product_name' => $variant->product->name,
@@ -55,9 +52,8 @@ class CartController extends Controller
     public function index()
     {
         $cart = session()->get('cart', []);
-        
-        // Calculate total amount
-        $total = collect($cart)->sum(function($item) {
+
+        $total = collect($cart)->sum(function ($item) {
             return $item['price'] * $item['quantity'];
         });
 

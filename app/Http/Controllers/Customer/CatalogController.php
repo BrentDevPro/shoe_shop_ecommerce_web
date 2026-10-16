@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Http\Request;
 
 class CatalogController extends Controller
 {
@@ -14,26 +14,22 @@ class CatalogController extends Controller
     {
         $query = Product::with(['category', 'brand'])->where('is_active', true);
 
-        // 1. Text Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('description', 'like', '%' . $search . '%');
+                $q->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('description', 'like', '%'.$search.'%');
             });
         }
 
-        // 2. Category Filter
         if ($request->filled('category')) {
             $query->where('category_id', $request->category);
         }
 
-        // 3. Brand Filter
         if ($request->filled('brand')) {
             $query->where('brand_id', $request->brand);
         }
 
-        // 4. Sorting
         if ($request->filled('sort')) {
             if ($request->sort == 'price_asc') {
                 $query->orderBy('price', 'asc');
@@ -46,12 +42,11 @@ class CatalogController extends Controller
             $query->latest();
         }
 
-        // Sidebar filter data
-        $categories = Category::withCount(['products' => function($q) {
+        $categories = Category::withCount(['products' => function ($q) {
             $q->where('is_active', true);
         }])->orderBy('name')->get();
 
-        $brands = Brand::withCount(['products' => function($q) {
+        $brands = Brand::withCount(['products' => function ($q) {
             $q->where('is_active', true);
         }])->orderBy('name')->get();
 

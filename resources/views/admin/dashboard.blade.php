@@ -37,7 +37,6 @@
     }
 </style>
 
-{{-- Dashboard Header --}}
 <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
     <div>
         <h3 class="fw-bold text-dark mb-1">Business Dashboard</h3>
@@ -48,9 +47,7 @@
     </a>
 </div>
 
-{{-- Metric Cards (Retaining your requested metrics) --}}
 <div class="row g-3 mb-5">
-    {{-- Card 1: Revenue (Completed) --}}
     <div class="col-xl-3 col-sm-6">
         <div class="card metric-card h-100 bg-white">
             <div class="card-body p-4 d-flex justify-content-between align-items-center">
@@ -65,7 +62,6 @@
         </div>
     </div>
 
-    {{-- Card 2: Pending Orders --}}
     <div class="col-xl-3 col-sm-6">
         <div class="card metric-card h-100 bg-white">
             <div class="card-body p-4 d-flex justify-content-between align-items-center">
@@ -80,7 +76,6 @@
         </div>
     </div>
 
-    {{-- Card 3: Active Products --}}
     <div class="col-xl-3 col-sm-6">
         <div class="card metric-card h-100 bg-white">
             <div class="card-body p-4 d-flex justify-content-between align-items-center">
@@ -95,7 +90,6 @@
         </div>
     </div>
 
-    {{-- Card 4: Total Orders --}}
     <div class="col-xl-3 col-sm-6">
         <div class="card metric-card h-100 bg-white">
             <div class="card-body p-4 d-flex justify-content-between align-items-center">
@@ -111,7 +105,6 @@
     </div>
 </div>
 
-{{-- Recent Orders Table --}}
 <div class="card metric-card bg-white overflow-hidden">
     <div class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-center">
         <h5 class="fw-bold text-dark mb-0 fs-6">Recent Customer Orders</h5>

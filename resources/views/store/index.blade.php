@@ -27,13 +27,11 @@
         color: #212529 !important;
     }
     
-    /* Instant opening for sort dropdown menu */
     .dropdown-menu {
         transition: none !important;
         animation: none !important;
     }
 
-    /* Strict fix for Laravel pagination styling & SVG sizing */
     .pagination-wrapper {
         background: #ffffff;
         border-radius: 1rem;
@@ -60,7 +58,6 @@
         list-style: none !important;
     }
 
-    /* General Page Link Buttons */
     .pagination .page-item .page-link,
     .pagination .page-item span {
         border-radius: 50rem !important;
@@ -80,7 +77,6 @@
         text-decoration: none !important;
     }
 
-    /* Enlarged Icon Styling for Previous & Next Buttons */
     .pagination .page-item:first-child .page-link,
     .pagination .page-item:first-child span,
     .pagination .page-item:last-child .page-link,
@@ -117,7 +113,6 @@
 
 <div class="container">
 
-    <!-- Hero Section -->
     <div class="hero-banner rounded-4 p-5 mb-5 text-white position-relative shadow-sm">
         <div class="row align-items-center">
             <div class="col-md-7 position-relative z-1">
@@ -136,10 +131,8 @@
         </div>
     </div>
 
-    <!-- Store Layout: Sidebar (Left) + Catalog (Right) -->
     <div class="row g-4">
 
-        {{-- Left Sidebar: Filters Only --}}
         <div class="col-lg-3">
             <div class="card border-0 shadow-sm rounded-4 p-4 bg-white sticky-top" style="top: 100px; z-index: 10;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -149,7 +142,6 @@
                     </button>
                 </div>
 
-                {{-- Sidebar Search Input --}}
                 <div class="mb-4">
                     <label class="form-label small fw-bold text-muted text-uppercase">Search</label>
                     <div class="input-group">
@@ -160,7 +152,6 @@
                     </div>
                 </div>
 
-                {{-- Category Filter --}}
                 <div class="mb-4">
                     <label class="form-label small fw-bold text-muted text-uppercase mb-2">Categories</label>
                     <div class="d-flex flex-column gap-1" style="max-height: 250px; overflow-y: auto;">
@@ -176,7 +167,6 @@
                     </div>
                 </div>
 
-                {{-- Brand Filter --}}
                 <div>
                     <label class="form-label small fw-bold text-muted text-uppercase mb-2">Brands</label>
                     <div class="d-flex flex-column gap-1" style="max-height: 220px; overflow-y: auto;">
@@ -195,16 +185,13 @@
             </div>
         </div>
 
-        {{-- Right Content: Header & Product Grid --}}
         <div class="col-lg-9">
 
-            {{-- Top Sort Bar --}}
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center bg-white p-3 rounded-4 shadow-sm mb-4 gap-3">
                 <p class="text-muted small fw-medium mb-0" id="showingText">
                     Showing {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }} of {{ $products->total() }} products
                 </p>
 
-                {{-- Custom Sort Dropdown --}}
                 <div class="dropdown">
                     <button class="btn btn-white border border-light-subtle rounded-pill px-4 py-2 text-dark fw-medium d-flex align-items-center gap-2 shadow-sm dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #fff;">
                         <i class="bi bi-sort-down fs-5 text-secondary"></i>
@@ -239,7 +226,6 @@
                 </div>
             </div>
 
-            {{-- Product Grid Wrapper --}}
             <div id="productGridWrapper" style="scroll-margin-top: 90px;">
                 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4">
                     @forelse($products as $product)
@@ -263,7 +249,6 @@
                         </a>
                     </div>
                     @empty
-                    {{-- Clean & Centered Empty State Card Layout --}}
                     <div class="col-12">
                         <div class="card border-0 shadow-sm rounded-4 bg-white text-center py-5 px-4 my-2">
                             <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
@@ -281,7 +266,6 @@
                     @endforelse
                 </div>
 
-                {{-- Pagination Wrapper --}}
                 @if($products->hasPages())
                 <div class="pagination-wrapper mb-5">
                     {{ $products->links('pagination::bootstrap-5') }}
@@ -295,7 +279,6 @@
 
 </div>
 
-<!-- Real-Time AJAX Search & Filter Script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
@@ -312,7 +295,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let debounceTimer;
 
-    // Helper to replace text/SVG prev & next with large Bootstrap Icons
     function formatPaginationIcons() {
         const prevItem = document.querySelector('.pagination .page-item:first-child .page-link, .pagination .page-item:first-child span');
         if (prevItem) {
@@ -344,30 +326,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function fetchProducts(page = null) {
         let url = new URL(window.location.href);
 
-        // Active Search Query
         const queryVal = (navSearchInput ? navSearchInput.value : searchInput.value).trim();
         if (queryVal) url.searchParams.set('search', queryVal);
         else url.searchParams.delete('search');
 
-        // Active Category
         const activeCategory = document.querySelector('.category-link.active');
         const categoryId = activeCategory ? activeCategory.dataset.category : '';
         if (categoryId) url.searchParams.set('category', categoryId);
         else url.searchParams.delete('category');
 
-        // Active Brand
         const activeBrand = document.querySelector('.brand-link.active');
         const brandId = activeBrand ? activeBrand.dataset.brand : '';
         if (brandId) url.searchParams.set('brand', brandId);
         else url.searchParams.delete('brand');
 
-        // Active Sort
         const activeSort = document.querySelector('.sort-option.bg-light');
         const sortValue = activeSort ? activeSort.dataset.value : 'latest';
         if (sortValue && sortValue !== 'latest') url.searchParams.set('sort', sortValue);
         else url.searchParams.delete('sort');
 
-        // Page Number Handling
         if (page) {
             url.searchParams.set('page', page);
         } else {
@@ -397,10 +374,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Initial Icon formatting
     formatPaginationIcons();
 
-    // Reset All Filters Action
     if (resetFiltersBtn) {
         resetFiltersBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -425,7 +400,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Shop Featured Shoes Hero Button Smooth Scroll to Product Grid
     if (shopFeaturedBtn) {
         shopFeaturedBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -447,7 +421,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Live search inputs
     if (searchInput) {
         searchInput.addEventListener('input', () => {
             if (navSearchInput) navSearchInput.value = searchInput.value;
@@ -471,7 +444,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Custom Sort Selection
     sortOptions.forEach(option => {
         option.addEventListener('click', function(e) {
             e.preventDefault();
@@ -484,7 +456,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Category Links
     categoryLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -494,7 +465,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Brand Links
     brandLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();

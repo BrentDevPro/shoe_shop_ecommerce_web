@@ -20,7 +20,6 @@
 
 <div class="container-fluid px-4 py-4">
 
-    {{-- Top Header & Navigation --}}
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
             <div class="d-flex align-items-center gap-2 text-muted small mb-1">
@@ -38,7 +37,6 @@
         </div>
     </div>
 
-    {{-- Alert Flash Messages --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4 p-3 d-flex align-items-center" role="alert">
             <i class="bi bi-check-circle-fill fs-5 me-3 text-success"></i>
@@ -55,7 +53,6 @@
         </div>
     @endif
 
-    {{-- Product Summary Banner Card --}}
     <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-4">
             <div class="d-flex align-items-center gap-3">
@@ -75,7 +72,6 @@
                 </div>
             </div>
 
-            {{-- Metric Display Cards --}}
             <div class="d-flex align-items-center gap-3">
                 <div class="bg-light rounded-4 px-4 py-3 text-center border border-light-subtle">
                     <span class="text-muted small d-block text-uppercase fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">Configured Variants</span>
@@ -91,7 +87,6 @@
 
     <div class="row g-4">
 
-        {{-- Left Column: Create Variant Form --}}
         <div class="col-lg-4">
             <div class="card border-0 shadow-sm rounded-4 bg-white p-4 sticky-top" style="top: 20px; z-index: 5;">
                 <div class="d-flex align-items-center gap-3 mb-3">
@@ -109,7 +104,6 @@
                 <form action="{{ route('admin.products.variants.store', $product->id) }}" method="POST">
                     @csrf
 
-                    {{-- Color Input --}}
                     <div class="mb-3">
                         <label for="color" class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.75rem;">Colorway</label>
                         <div class="input-group border border-light-subtle rounded-pill shadow-sm overflow-hidden bg-light">
@@ -123,7 +117,6 @@
                         @enderror
                     </div>
 
-                    {{-- Size Input --}}
                     <div class="mb-3">
                         <label for="size" class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.75rem;">Size (EU / US)</label>
                         <div class="input-group border border-light-subtle rounded-pill shadow-sm overflow-hidden bg-light">
@@ -137,7 +130,6 @@
                         @enderror
                     </div>
 
-                    {{-- Initial Stock Input --}}
                     <div class="mb-4">
                         <label for="stock_quantity" class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.75rem;">Initial Stock</label>
                         <div class="input-group border border-light-subtle rounded-pill shadow-sm overflow-hidden bg-light">
@@ -159,7 +151,6 @@
             </div>
         </div>
 
-        {{-- Right Column: Variant Inventory Table --}}
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light-subtle">
@@ -184,7 +175,6 @@
                         <tbody>
                             @forelse($variants as $variant)
                                 <tr>
-                                    {{-- Color --}}
                                     <td class="ps-3 py-3 fw-bold text-dark">
                                         <div class="d-flex align-items-center gap-2">
                                             <span class="rounded-circle bg-dark d-inline-block" style="width: 8px; height: 8px;"></span>
@@ -192,12 +182,10 @@
                                         </div>
                                     </td>
 
-                                    {{-- Size --}}
                                     <td class="py-3">
                                         <span class="badge bg-dark rounded-pill px-3 py-2 font-monospace fs-6">{{ $variant->size }}</span>
                                     </td>
 
-                                    {{-- Status Badge --}}
                                     <td class="py-3">
                                         @if($variant->stock_quantity > 10)
                                             <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-medium d-inline-flex align-items-center gap-1">
@@ -214,7 +202,6 @@
                                         @endif
                                     </td>
 
-                                    {{-- Stock Display --}}
                                     <td class="py-3">
                                         <div class="d-flex align-items-center gap-1">
                                             <span class="fw-bold text-dark font-monospace fs-6">{{ $variant->stock_quantity }}</span>
@@ -222,15 +209,12 @@
                                         </div>
                                     </td>
 
-                                    {{-- Actions: Edit Modal Trigger + Delete Button --}}
                                     <td class="text-end pe-3 py-3">
                                         <div class="d-flex justify-content-end align-items-center gap-2">
-                                            {{-- Edit Trigger Button --}}
                                             <button type="button" class="btn btn-outline-dark btn-sm rounded-circle action-btn d-inline-flex align-items-center justify-content-center shadow-sm" data-bs-toggle="modal" data-bs-target="#editVariantModal{{ $variant->id }}" title="Edit Variant">
                                                 <i class="bi bi-pencil-fill"></i>
                                             </button>
 
-                                            {{-- Delete Button --}}
                                             <form action="{{ route('admin.products.variants.destroy', [$product->id, $variant->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this variant?');" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -240,7 +224,6 @@
                                             </form>
                                         </div>
 
-                                        {{-- Modal with Bordered & Shadowed Inputs --}}
                                         <div class="modal fade" id="editVariantModal{{ $variant->id }}" tabindex="-1" aria-labelledby="editVariantModalLabel{{ $variant->id }}" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content rounded-4 border-0 shadow-lg text-start">
@@ -261,7 +244,6 @@
                                                         @method('PUT')
                                                         <div class="modal-body p-4">
                                                             
-                                                            {{-- Colorway Input --}}
                                                             <div class="mb-3">
                                                                 <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.75rem;">Colorway</label>
                                                                 <div class="input-group border border-light-subtle rounded-pill shadow-sm overflow-hidden bg-light">
@@ -272,7 +254,6 @@
                                                                 </div>
                                                             </div>
 
-                                                            {{-- Size Input --}}
                                                             <div class="mb-3">
                                                                 <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.75rem;">Size Option</label>
                                                                 <div class="input-group border border-light-subtle rounded-pill shadow-sm overflow-hidden bg-light">
@@ -283,7 +264,6 @@
                                                                 </div>
                                                             </div>
 
-                                                            {{-- Stock Quantity Input --}}
                                                             <div class="mb-3">
                                                                 <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.75rem;">Stock Quantity</label>
                                                                 <div class="input-group border border-light-subtle rounded-pill shadow-sm overflow-hidden bg-light">

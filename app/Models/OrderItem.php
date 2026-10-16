@@ -27,7 +27,6 @@ class OrderItem extends Model
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
-    // NEW: Connects the order item back to the specific Product (Shoe)
     public function product()
     {
         return $this->belongsTo(Product::class);

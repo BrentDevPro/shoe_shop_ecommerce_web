@@ -25,7 +25,7 @@ class Product extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if (!$this->image_path) {
+        if (! $this->image_path) {
             return null;
         }
 
@@ -33,7 +33,7 @@ class Product extends Model
             return $this->image_path;
         }
 
-        return asset('storage/' . ltrim($this->image_path, '/'));
+        return asset('storage/'.ltrim($this->image_path, '/'));
     }
 
     public function brand(): BelongsTo

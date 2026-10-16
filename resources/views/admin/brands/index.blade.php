@@ -29,7 +29,6 @@
     .form-control:focus { box-shadow: none; border-color: #dee2e6; }
     .editable-input:focus { border-color: #212529 !important; }
 
-    /* Storefront-Identical Pagination Styling */
     .pagination-wrapper {
         background: #ffffff;
         border-top: 1px solid #edf2f7;
@@ -109,7 +108,6 @@
 
 <div class="container-fluid px-4 py-4">
 
-    {{-- Top Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="fw-bold text-dark mb-1">Manage Brands</h3>
@@ -117,7 +115,6 @@
         </div>
     </div>
 
-    {{-- Alert Messages --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4 p-3 d-flex align-items-center" role="alert">
             <i class="bi bi-check-circle-fill fs-5 me-3 text-success"></i>
@@ -135,10 +132,8 @@
     @endif
 
     <div class="row g-4 mb-5">
-        {{-- Left Column: Brands Table --}}
         <div class="col-lg-8">
 
-            {{-- Search Toolbar --}}
             <div class="card metric-card bg-white p-3 mb-4">
                 <form action="{{ route('admin.brands.index') }}" method="GET" class="row g-2 align-items-center">
                     <div class="col">
@@ -223,7 +218,6 @@
                     </div>
                 </div>
 
-                {{-- Pagination Footer --}}
                 @if(method_exists($brands, 'hasPages') && $brands->hasPages())
                     <div class="card-footer bg-white pagination-wrapper d-flex justify-content-center">
                         {{ $brands->links('pagination::bootstrap-5') }}
@@ -232,7 +226,6 @@
             </div>
         </div>
 
-        {{-- Right Column: Add Brand Form --}}
         <div class="col-lg-4">
             <div class="card metric-card bg-white border border-light-subtle sticky-top" style="top: 100px;">
                 <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">

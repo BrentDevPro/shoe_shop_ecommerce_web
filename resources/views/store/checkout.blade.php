@@ -20,7 +20,6 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-muted small fw-bold text-uppercase">Delivery Address <span class="text-danger">*</span></label>
-                        <!-- Will pre-fill with Tarlac City if it exists in the user profile -->
                         <textarea name="shipping_address" class="form-control rounded-3" rows="3" required>{{ Auth::user()->address ?? 'Tarlac City, Philippines' }}</textarea>
                     </div>
                 </div>

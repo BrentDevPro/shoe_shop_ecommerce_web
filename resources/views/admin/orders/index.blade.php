@@ -27,7 +27,6 @@
         padding: 1rem 0.5rem;
     }
 
-    /* Storefront-Identical Pagination Styling */
     .pagination-wrapper {
         background: #ffffff;
         border-top: 1px solid #edf2f7;
@@ -107,7 +106,6 @@
 
 <div class="container-fluid px-4 py-4">
 
-    {{-- Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="fw-bold text-dark mb-1">Orders Management</h3>
@@ -115,11 +113,9 @@
         </div>
     </div>
 
-    {{-- Search & Filter Toolbar --}}
     <div class="card metric-card bg-white p-3 mb-4">
         <form action="{{ route('admin.orders.index') }}" method="GET" class="row g-3 align-items-center">
             
-            {{-- Search Bar --}}
             <div class="col-md-6">
                 <div class="input-group border border-light-subtle rounded-pill shadow-sm overflow-hidden bg-light">
                     <span class="input-group-text bg-light border-0 ps-3 text-muted">
@@ -129,7 +125,6 @@
                 </div>
             </div>
 
-            {{-- Status Filter --}}
             <div class="col-md-4">
                 <select name="status" class="form-select rounded-pill bg-light border border-light-subtle px-3 py-2 text-dark shadow-sm" onchange="this.form.submit()">
                     <option value="">All Order Statuses</option>
@@ -141,7 +136,6 @@
                 </select>
             </div>
 
-            {{-- Reset Filters Button --}}
             <div class="col-md-2 text-end ms-auto">
                 @if(request('search') || request('status'))
                     <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-danger rounded-pill w-100 py-2" title="Reset Filters">
@@ -153,7 +147,6 @@
         </form>
     </div>
 
-    {{-- Orders Table Card --}}
     <div class="card metric-card bg-white overflow-hidden">
         <div class="card-body px-4 pb-4 pt-3">
             <div class="table-responsive">
@@ -231,7 +224,6 @@
             </div>
         </div>
 
-        {{-- Pagination Footer --}}
         @if(method_exists($orders, 'hasPages') && $orders->hasPages())
             <div class="card-footer bg-white pagination-wrapper d-flex justify-content-center">
                 {{ $orders->links('pagination::bootstrap-5') }}

@@ -10,7 +10,6 @@
     <style>
         body { background-color: #f4f6f9; font-family: system-ui, -apple-system, sans-serif; }
         
-        /* Premium Dark Sidebar matching reference */
         .sidebar { background-color: #161b22; color: #8b95a5; }
         .sidebar-brand { color: #ffffff; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1.25rem; font-weight: 700; }
         .sidebar-brand i { color: #eb4f5a; font-size: 1.3rem; }
@@ -27,7 +26,6 @@
 </head>
 <body>
     <div class="d-flex" style="min-height: 100vh;">
-        <!-- Premium Dark Sidebar -->
         <div class="sidebar p-3 d-flex flex-column" style="width: 260px;">
             <div class="mb-4 mt-2 px-2">
                 <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
@@ -76,7 +74,6 @@
             </ul>
             
             <div class="mt-auto pt-4 d-flex flex-column gap-3">
-                <!-- View Customer Shop (Opens in New Tab) -->
                 <a href="{{ route('store.index') }}" target="_blank" class="btn btn-outline-light rounded-pill w-100 d-flex align-items-center justify-content-center gap-2" style="font-size: 0.85rem; border-color: rgba(255,255,255,0.2);">
                     <i class="bi bi-eye"></i> View Customer Shop
                 </a>
@@ -90,9 +87,7 @@
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="flex-grow-1">
-            <!-- Retained Top Control Panel -->
             <nav class="navbar top-navbar sticky-top border-bottom border-light-subtle px-4 py-3 shadow-sm">
                 <span class="navbar-brand mb-0 h1 fw-bold text-dark fs-5">Control Panel</span>
                 <div class="ms-auto d-flex align-items-center gap-3">

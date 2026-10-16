@@ -17,7 +17,6 @@
     @endif
 
     <div class="row g-5">
-        {{-- Left Side: Edit Form --}}
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-5 bg-white">
                 <h4 class="fw-bold mb-4 text-dark">Profile Information</h4>
@@ -76,7 +75,6 @@
             </div>
         </div>
 
-        {{-- Right Side: Quick Links Card --}}
         <div class="col-lg-4">
             <div class="card border-0 shadow-sm rounded-4 bg-light p-4 text-center sticky-top" style="top: 100px;">
                 <div class="bg-white text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold mx-auto mb-3 shadow-sm border border-light-subtle" style="width: 80px; height: 80px; font-size: 2.2rem;">

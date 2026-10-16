@@ -2,7 +2,6 @@
 
 @section('content')
 <style>
-    /* Styling for Tracking timeline matching image_3.png */
     .timeline-container { position: relative; display: flex; justify-content: space-between; align-items: center; width: 100%; margin: 3rem 0; }
     .timeline-line { position: absolute; top: 25px; transform: translateY(-50%); left: 12.5%; right: 12.5%; height: 4px; background-color: #e9ecef; z-index: 1; }
     .timeline-progress { position: absolute; top: 25px; transform: translateY(-50%); left: 12.5%; width: 0%; height: 4px; background-color: #20c997; z-index: 1; transition: width 0.4s ease; }
@@ -12,7 +11,6 @@
     .timeline-step { position: relative; z-index: 2; text-align: center; background: transparent; flex: 1; }
     .timeline-icon { width: 50px; height: 50px; border-radius: 50%; background-color: #e9ecef; color: #adb5bd; display: inline-flex; align-items: center; justify-content: center; font-size: 1.25rem; transition: all 0.3s ease; border: 4px solid #fff; }
     .timeline-icon .bi { display: inline-flex; align-items: center; justify-content: center; width: 1em; height: 1em; line-height: 1; vertical-align: 0; }
-    /* Dynamic active status rules */
     .timeline-step.completed .timeline-icon { background-color: #198754; color: #fff; }
     .timeline-step.active .timeline-icon { background-color: #dc3545; color: #fff; box-shadow: 0 0 0 10px rgba(220, 53, 69, 0.2); animation: pulse 2s infinite; }
     @keyframes pulse {
@@ -60,12 +58,10 @@
                 <p class="mb-0 text-muted">If you have questions, please reach out to customer support.</p>
             </div>
         @else
-            {{-- Dynamic Timeline --}}
             <div class="timeline-container">
                 <div class="timeline-line"></div>
                 <div class="timeline-progress timeline-progress-{{ $order->status }}"></div>
 
-                {{-- Step 1: Placed (pending) --}}
                 @php 
                     $stepClass = '';
                     if ($order->status === 'pending') $stepClass = 'active';
@@ -78,7 +74,6 @@
                     <p class="fw-bold small mb-0 mt-2">Placed</p>
                 </div>
 
-                {{-- Step 2: Processing (paid) --}}
                 @php 
                     $stepClass = '';
                     if ($order->status === 'paid') $stepClass = 'active';
@@ -89,7 +84,6 @@
                     <p class="fw-bold small mb-0 mt-2">Processing</p>
                 </div>
 
-                {{-- Step 3: Shipped (shipped) --}}
                 @php 
                     $stepClass = '';
                     if ($order->status === 'shipped') $stepClass = 'active';
@@ -100,7 +94,6 @@
                     <p class="fw-bold small mb-0 mt-2">Shipped</p>
                 </div>
 
-                {{-- Step 4: Delivered (completed) --}}
                 @php 
                     $stepClass = '';
                     if ($order->status === 'completed') $stepClass = 'completed';
@@ -112,14 +105,12 @@
             </div>
         @endif
 
-        {{-- Purchased items area --}}
         <div class="bg-light p-4 rounded-4">
             <h6 class="text-muted small fw-bold text-uppercase mb-4">Purchased Footwear</h6>
             <div class="row g-4">
                 @foreach($order->items as $item)
                     <div class="col-12 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                         
-                        {{-- SAFE CHECK: Verifies the product still exists in database --}}
                         @if($item->variant && $item->variant->product)
                             <div class="d-flex align-items-center gap-3">
                                 <img src="{{ $item->variant->product->image_url }}" alt="shoe" class="rounded shadow-sm" style="width: 70px; height: 70px; object-fit: cover; background-color: #fff;">
@@ -130,7 +121,7 @@
                                 </div>
                             </div>
                         @else
-                            {{-- FALLBACK if admin deleted the shoe --}}
+                            {{-- Keep order history visible when a product is removed. --}}
                             <div class="d-flex align-items-center gap-3">
                                 <div class="rounded border d-flex align-items-center justify-content-center bg-white text-muted shadow-sm" style="width: 70px; height: 70px;">
                                     <i class="bi bi-box-seam fs-4"></i>

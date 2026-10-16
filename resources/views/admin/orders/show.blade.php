@@ -6,7 +6,6 @@
     .tracking-wide { letter-spacing: 0.05em; }
 </style>
 
-{{-- Page Header --}}
 <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
     <div>
         <h3 class="fw-bold text-dark mb-1">Order Details</h3>
@@ -17,7 +16,6 @@
     </a>
 </div>
 
-{{-- Alerts --}}
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm mb-4" role="alert">
         <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
@@ -26,7 +24,6 @@
 @endif
 
 <div class="row g-4">
-    {{-- Left Column: Order Items --}}
     <div class="col-lg-8">
         <div class="card metric-card bg-white h-100">
             <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-2">
@@ -68,10 +65,8 @@
         </div>
     </div>
 
-    {{-- Right Column: Status Update & Customer Info --}}
     <div class="col-lg-4">
         
-        {{-- Status Update Form --}}
         <div class="card metric-card bg-white mb-4">
             <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
                 <h6 class="fw-bold text-dark mb-0">Update Order Status</h6>
@@ -95,14 +90,12 @@
             </div>
         </div>
 
-        {{-- Customer Info --}}
         <div class="card metric-card bg-white">
             <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
                 <h6 class="fw-bold text-dark mb-0">Customer Details</h6>
             </div>
             <div class="card-body p-4">
                 
-                {{-- Name --}}
                 <div class="mb-4">
                     <p class="mb-1 text-muted small text-uppercase tracking-wide fw-bold">Customer Profile</p>
                     <div class="d-flex align-items-center gap-3 mt-2">
@@ -116,7 +109,6 @@
                     </div>
                 </div>
 
-                {{-- Payment --}}
                 <div class="mb-4">
                     <p class="mb-1 text-muted small text-uppercase tracking-wide fw-bold">Payment Method</p>
                     <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-medium border border-primary border-opacity-25 mt-1">
@@ -124,7 +116,6 @@
                     </span>
                 </div>
 
-                {{-- Address --}}
                 <div>
                     <p class="mb-1 text-muted small text-uppercase tracking-wide fw-bold">Shipping Address</p>
                     <div class="bg-light rounded-4 p-3 mt-2">
@@ -135,7 +126,6 @@
                     </div>
                 </div>
                 
-                {{-- Date --}}
                 <div class="mt-4 pt-4 border-top border-light-subtle">
                     <p class="mb-1 text-muted small text-uppercase tracking-wide fw-bold">Date Placed</p>
                     <p class="mb-0 text-dark small fw-medium"><i class="bi bi-calendar3 me-2 text-muted"></i>{{ $order->created_at->format('F d, Y \a\t h:i A') }}</p>

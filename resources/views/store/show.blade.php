@@ -5,7 +5,6 @@
     .tracking-wide { letter-spacing: 0.05em; }
     .form-control:focus, .form-select:focus { box-shadow: none; border-color: #dee2e6; }
     
-    /* Gallery Styles */
     .thumbnail-wrapper { height: 80px; cursor: pointer; transition: all 0.2s ease; border: 2px solid transparent; background-color: #f8f9fa; }
     .thumbnail-wrapper:hover { border-color: #adb5bd; }
     .thumbnail-wrapper.active-thumb { border-color: #212529; }
@@ -15,7 +14,6 @@
 </style>
 
 <div class="container my-5">
-    {{-- Breadcrumbs --}}
     <div class="mb-4">
         <span class="text-muted small">Store / {{ $product->category->name ?? 'Category' }} / <span class="text-dark fw-bold">{{ $product->name }}</span></span>
     </div>
@@ -27,14 +25,11 @@
         <div class="alert alert-danger rounded-4" role="alert">{{ session('error') }}</div>
     @endif
 
-    {{-- White Card Container --}}
     <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
         <div class="row g-5 align-items-center">
             
-            {{-- LEFT COLUMN: Interactive Gallery --}}
             <div class="col-lg-6">
                 <div class="d-flex gap-3">
-                    {{-- Vertical Thumbnails --}}
                     <div class="d-flex flex-column gap-2" style="width: 80px;">
                         <div class="thumbnail-wrapper active-thumb rounded-3 overflow-hidden shadow-sm gallery-thumb" data-image="{{ $product->image_url }}">
                             <img src="{{ $product->image_url }}" alt="Thumbnail">
@@ -47,13 +42,11 @@
                         @endforeach
                     </div>
 
-                    {{-- Large Main Image View with Zoom --}}
                     <div class="flex-grow-1 position-relative">
                         <div class="main-image-container rounded-4 shadow-sm border border-light-subtle" id="imageContainer">
                             <img src="{{ $product->image_url }}" id="mainImage" alt="{{ $product->name }}">
                         </div>
                         
-                        {{-- Zoom Controls --}}
                         <div class="mt-3 d-flex justify-content-center align-items-center gap-2">
                             <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;" onclick="zoomOut()" title="Zoom Out">
                                 <i class="bi bi-zoom-out"></i>
@@ -69,7 +62,6 @@
                 </div>
             </div>
 
-            {{-- RIGHT COLUMN: Product Details & Variant Selection --}}
             <div class="col-lg-6 ps-lg-4">
                 <h6 class="text-danger fw-bold text-uppercase tracking-wide small mb-2">{{ $product->brand->name ?? 'Brand' }}</h6>
                 <h1 class="fw-bold text-dark mb-3 display-5" style="letter-spacing: -0.03em;">{{ $product->name }}</h1>
@@ -128,7 +120,6 @@
 </div>
 
 <script>
-    // Gallery Logic
     const mainImage = document.getElementById('mainImage');
     const thumbnails = document.querySelectorAll('.gallery-thumb');
     let currentScale = 1;
@@ -147,7 +138,6 @@
         });
     });
 
-    // Zoom Logic
     function zoomIn() {
         if (currentScale < 3) {
             currentScale += 0.5;

@@ -42,7 +42,6 @@
         transform: translateY(-2px);
     }
 
-    /* STOREFRONT-IDENTICAL PAGINATION STYLING */
     .pagination-wrapper {
         background: #ffffff;
         border-top: 1px solid #edf2f7;
@@ -67,7 +66,6 @@
         list-style: none !important;
     }
 
-    /* General Page Link Buttons */
     .pagination .page-item .page-link,
     .pagination .page-item span {
         border-radius: 50rem !important;
@@ -87,7 +85,6 @@
         text-decoration: none !important;
     }
 
-    /* Enlarged Icon Styling for Previous & Next Buttons */
     .pagination .page-item:first-child .page-link,
     .pagination .page-item:first-child span,
     .pagination .page-item:last-child .page-link,
@@ -124,7 +121,6 @@
 
 <div class="container-fluid px-4 py-4">
 
-    {{-- Top Header --}}
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
             <h3 class="fw-bold text-dark mb-1">Shoes & Inventory</h3>
@@ -136,7 +132,6 @@
         </a>
     </div>
 
-    {{-- Alert Flash Messages --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4 p-3 d-flex align-items-center" role="alert">
             <i class="bi bi-check-circle-fill fs-5 me-3 text-success"></i>
@@ -145,11 +140,9 @@
         </div>
     @endif
 
-    {{-- Search & Filter Toolbar --}}
     <div class="card metric-card bg-white p-3 mb-4">
         <form action="{{ route('admin.products.index') }}" method="GET" class="row g-3 align-items-center">
             
-            {{-- Search Bar --}}
             <div class="col-md-5">
                 <div class="input-group border border-light-subtle rounded-pill shadow-sm overflow-hidden bg-light">
                     <span class="input-group-text bg-light border-0 ps-3 text-muted">
@@ -159,7 +152,6 @@
                 </div>
             </div>
 
-            {{-- Brand Filter --}}
             @if(isset($brands) && $brands->count() > 0)
             <div class="col-md-3">
                 <select name="brand_id" class="form-select rounded-pill bg-light border border-light-subtle px-3 py-2 text-dark shadow-sm" onchange="this.form.submit()">
@@ -173,7 +165,6 @@
             </div>
             @endif
 
-            {{-- Category Filter --}}
             @if(isset($categories) && $categories->count() > 0)
             <div class="col-md-3">
                 <select name="category_id" class="form-select rounded-pill bg-light border border-light-subtle px-3 py-2 text-dark shadow-sm" onchange="this.form.submit()">
@@ -187,7 +178,6 @@
             </div>
             @endif
 
-            {{-- Reset Filters --}}
             <div class="col-md-1 text-end ms-auto">
                 @if(request('search') || request('brand_id') || request('category_id'))
                     <a href="{{ route('admin.products.index') }}" class="btn btn-outline-danger rounded-pill w-100 py-2" title="Reset Filters">
@@ -199,7 +189,6 @@
         </form>
     </div>
 
-    {{-- Inventory Table Card --}}
     <div class="card metric-card bg-white overflow-hidden">
         <div class="card-body px-4 pb-4 pt-3">
             <div class="table-responsive">
@@ -233,21 +222,17 @@
                                     @endif
                                 </td>
 
-                                {{-- Action Column --}}
                                 <td class="text-end pe-1">
                                     <div class="d-flex justify-content-end align-items-center gap-1">
-                                        <!-- Variants Button -->
                                         <a href="{{ route('admin.products.variants.index', $product->id) }}" class="btn btn-sm btn-dark rounded-pill px-3 fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.75rem;">
                                             <i class="bi bi-layers"></i>
                                             <span>Variants</span>
                                         </a>
 
-                                        <!-- Edit Button -->
                                         <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-sm btn-outline-secondary rounded-circle action-btn shadow-sm" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
 
-                                        <!-- Delete Button -->
                                         <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to completely delete this shoe?');" class="m-0 p-0 d-inline">
                                             @csrf
                                             @method('DELETE')
@@ -271,7 +256,6 @@
             </div>
         </div>
 
-        {{-- Pagination Footer matching Storefront --}}
         @if(method_exists($products, 'hasPages') && $products->hasPages())
             <div class="card-footer bg-white pagination-wrapper">
                 {{ $products->links('pagination::bootstrap-5') }}
@@ -283,7 +267,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Format pagination arrows to match storefront Bootstrap chevron icons
     const prevItem = document.querySelector('.pagination .page-item:first-child .page-link, .pagination .page-item:first-child span');
     if (prevItem) {
         prevItem.innerHTML = '<i class="bi bi-chevron-left"></i>';

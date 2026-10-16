@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use App\Models\User;
 
 class ProfileController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
+
         return view('store.profile', compact('user'));
     }
 
@@ -29,21 +30,19 @@ class ProfileController extends Controller
             'new_password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // Handle Password Update
         if ($request->filled('current_password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
+            if (! Hash::check($request->current_password, $user->password)) {
                 return back()->withErrors(['current_password' => 'The provided password does not match your current password.']);
             }
             $user->password = Hash::make($request->new_password);
         }
 
-        // Update Profile Info
         $user->name = $request->name;
         $user->email = $request->email;
         if ($request->has('address')) {
             $user->address = $request->address;
         }
-        
+
         $user->save();
 
         return back()->with('success', 'Profile updated successfully.');

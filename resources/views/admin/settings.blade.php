@@ -21,7 +21,6 @@
 @endif
 
 <div class="row g-4">
-    {{-- Left Column: Form --}}
     <div class="col-lg-8">
         <div class="card metric-card bg-white">
             <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
@@ -77,7 +76,6 @@
         </div>
     </div>
     
-    {{-- Right Column: User Profile Badge --}}
     <div class="col-lg-4">
         <div class="card metric-card bg-white">
             <div class="card-body p-4 text-center mt-3">

@@ -20,7 +20,6 @@
     @csrf
 
     <div class="row g-4 mb-5">
-        {{-- Left Column: Main Details --}}
         <div class="col-lg-8">
             <div class="card metric-card bg-white h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
@@ -67,16 +66,13 @@
             </div>
         </div>
 
-        {{-- Right Column: Media & Actions --}}
         <div class="col-lg-4">
-            {{-- Image Card (Unified Input) --}}
             <div class="card metric-card bg-white mb-4">
                 <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
                     <h6 class="fw-bold text-dark mb-0">Product Images</h6>
                 </div>
                 <div class="card-body p-4 text-center">
                     
-                    {{-- Placeholder Icon --}}
                     <div id="imagePlaceholder" class="bg-light rounded-4 border border-light-subtle d-flex align-items-center justify-content-center mb-4 mx-auto" style="width: 100%; height: 160px;">
                         <div class="text-muted">
                             <i class="bi bi-images d-block mb-2" style="font-size: 2.5rem;"></i>
@@ -84,7 +80,6 @@
                         </div>
                     </div>
 
-                    {{-- Dynamic Multi-Image Preview Container --}}
                     <div id="previewContainer" class="d-flex flex-wrap justify-content-center gap-2 mb-4"></div>
                     
                     <div class="text-start">
@@ -95,7 +90,6 @@
                 </div>
             </div>
 
-            {{-- Status & Save Card --}}
             <div class="card metric-card bg-white">
                 <div class="card-body p-4">
                     <div class="bg-light rounded-4 p-3 mb-4 d-flex align-items-center justify-content-between">
@@ -118,7 +112,6 @@
 </form>
 
 <script>
-    // Advanced Multi-Image Preview Logic
     document.getElementById('imageInput').addEventListener('change', function(event) {
         const files = event.target.files;
         const previewContainer = document.getElementById('previewContainer');

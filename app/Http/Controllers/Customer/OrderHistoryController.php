@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +10,6 @@ class OrderHistoryController extends Controller
 {
     public function index()
     {
-        // We MUST include 'with()' so the system fetches the pictures for the list view
         $orders = Order::with('items.variant.product')
             ->where('user_id', Auth::id())
             ->latest()
@@ -20,15 +18,12 @@ class OrderHistoryController extends Controller
         return view('store.orders.index', compact('orders'));
     }
 
-    // 2. The specific Order Tracking View
     public function show(Order $order)
     {
-        // Ensure users can only see their own orders
         if ($order->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
-        // Load the items, variants, and products for this specific order
         $order->load('items.variant.product');
 
         return view('store.orders.show', compact('order'));

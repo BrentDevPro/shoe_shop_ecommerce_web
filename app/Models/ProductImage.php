@@ -9,11 +9,12 @@ use Illuminate\Support\Str;
 class ProductImage extends Model
 {
     use HasFactory;
+
     protected $fillable = ['product_id', 'image_path'];
 
     public function getImageUrlAttribute(): ?string
     {
-        if (!$this->image_path) {
+        if (! $this->image_path) {
             return null;
         }
 
@@ -21,7 +22,7 @@ class ProductImage extends Model
             return $this->image_path;
         }
 
-        return asset('storage/' . ltrim($this->image_path, '/'));
+        return asset('storage/'.ltrim($this->image_path, '/'));
     }
 
     public function product()

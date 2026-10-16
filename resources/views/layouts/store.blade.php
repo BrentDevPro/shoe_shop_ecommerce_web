@@ -41,7 +41,6 @@
             box-shadow: none !important;
         }
         
-        /* Dropdown transition for smoother UX */
         .dropdown-menu {
             transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
         }
@@ -49,23 +48,19 @@
 </head>
 
 <body>
-    <!-- Modernized Navbar -->
     <nav class="navbar navbar-expand-lg bg-white border-bottom py-3 sticky-top shadow-sm">
         <div class="container">
             
-            {{-- BRAND LOGO --}}
             <a class="navbar-brand fw-bold text-danger fs-4 me-lg-5" href="{{ url('/') }}">
                 <i class="bi bi-shop"></i> SHOE SHOP.
             </a>
 
-            {{-- MOBILE MENU TOGGLE --}}
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#storeNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="storeNav">
                 
-{{-- CENTER: SEARCH BAR --}}
                 <form id="navSearchForm" action="{{ route('store.index') }}" method="GET" class="d-flex mx-auto my-3 my-lg-0 w-100" style="max-width: 500px;">
                     <div class="input-group shadow-sm rounded-pill overflow-hidden border border-light-subtle">
                         <input type="text" id="navSearchInput" name="search" class="form-control search-input border-0 bg-light px-4 py-2" placeholder="Search shoes, brands..." value="{{ request('search') }}">
@@ -75,10 +70,8 @@
                     </div>
                 </form>
 
-                {{-- RIGHT: ORDERS, CART & ACCOUNT SETTINGS --}}
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-3">
                     
-                    {{-- Orders & Tracking (Visible if logged in) --}}
                     @auth
                     @php
                     $orderCount = \App\Models\Order::where('user_id', Auth::id())
@@ -96,7 +89,6 @@
                     </li>
                     @endauth
 
-                    {{-- Cart Button (Icon Only - Perfect Circle) --}}
                     <li class="nav-item">
                         @php $cartCount = session('cart') ? count(session('cart')) : 0; @endphp
                         <a href="{{ route('cart.index') }}" class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center position-relative shadow-sm" style="width: 45px; height: 45px;" title="View Shopping Cart">
@@ -109,7 +101,6 @@
                         </a>
                     </li>
 
-                    {{-- User Account Dropdown (Friendly & Modern UI) --}}
                     @guest
                     <li class="nav-item ms-lg-2">
                         <a href="{{ route('login') }}" class="btn btn-dark rounded-pill px-4 py-2 shadow-sm fw-bold">Login</a>
@@ -124,13 +115,11 @@
                         </a>
                         
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-3 py-0 overflow-hidden" style="min-width: 240px;">
-                            {{-- Dropdown Header with User Info --}}
                             <li class="px-4 py-3 bg-light border-bottom">
                                 <p class="mb-0 fw-bold text-dark">{{ Auth::user()->name }}</p>
                                 <small class="text-muted d-block text-truncate" style="max-width: 200px;">{{ Auth::user()->email ?? 'Member' }}</small>
                             </li>
                             
-                            {{-- Menu Links --}}
                             <li class="pt-2">
                                 <a class="dropdown-item py-2 px-4 fw-medium text-secondary d-flex align-items-center gap-3" href="{{ route('store.index') }}">
                                     <i class="bi bi-shop fs-5"></i> Store Home

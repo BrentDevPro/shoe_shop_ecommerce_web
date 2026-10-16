@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use App\Models\User; // Explicitly import the User model
 
 class SettingsController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
+
         return view('admin.settings', compact('user'));
     }
 
     public function update(Request $request)
     {
-        // Explicitly fetch the Eloquent User model to fix the "unidentified method" error
         $user = User::find(Auth::id());
 
         $request->validate([
@@ -29,18 +29,16 @@ class SettingsController extends Controller
             'new_password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // Handle Password Update if provided
         if ($request->filled('current_password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
+            if (! Hash::check($request->current_password, $user->password)) {
                 return back()->withErrors(['current_password' => 'The provided password does not match your current password.']);
             }
             $user->password = Hash::make($request->new_password);
         }
 
-        // Update Name and Email
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->save(); // The editor now knows this is an Eloquent Model
+        $user->save();
 
         return back()->with('success', 'Account settings successfully updated.');
     }

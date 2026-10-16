@@ -6,7 +6,6 @@
         <div class="col-xl-10">
             <div class="card border-0 shadow-lg rounded-5 overflow-hidden">
                 <div class="row g-0">
-                    {{-- Left Side: Premium Lifestyle Image --}}
                     <div class="col-lg-6 d-none d-lg-block bg-light position-relative">
                         <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?q=80&w=800&auto=format&fit=crop" alt="Sneaker Collection" class="img-fluid h-100 w-100" style="object-fit: cover;">
                         <div class="position-absolute bottom-0 start-0 w-100 p-5" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
@@ -15,7 +14,6 @@
                         </div>
                     </div>
 
-                    {{-- Right Side: Login Form --}}
                     <div class="col-lg-6 p-4 p-md-5 d-flex flex-column justify-content-center bg-white">
                         <div class="text-center mb-5">
                             <h2 class="fw-bold tracking-tight text-dark mb-1">Welcome Back</h2>

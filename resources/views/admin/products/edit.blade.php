@@ -21,7 +21,6 @@
     @method('PUT')
 
     <div class="row g-4 mb-5">
-        {{-- Left Column: Main Details --}}
         <div class="col-lg-8">
             <div class="card metric-card bg-white h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
@@ -66,9 +65,7 @@
             </div>
         </div>
 
-        {{-- Right Column: Media & Actions --}}
         <div class="col-lg-4">
-            {{-- Unified Image Card --}}
             <div class="card metric-card bg-white mb-4">
                 <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
                     <h6 class="fw-bold text-dark mb-0">Product Images</h6>
@@ -107,7 +104,6 @@
                 </div>
             </div>
 
-            {{-- Status & Save Card --}}
             <div class="card metric-card bg-white">
                 <div class="card-body p-4">
                     <div class="bg-light rounded-4 p-3 mb-4 d-flex align-items-center justify-content-between">
@@ -129,7 +125,6 @@
     </div>
 </form>
 
-{{-- Hidden Delete Forms for Gallery Images --}}
 @foreach($product->images as $img)
     <form id="delete-gallery-{{ $img->id }}" action="{{ route('admin.products.gallery.destroy', $img->id) }}" method="POST" class="d-none">
         @csrf

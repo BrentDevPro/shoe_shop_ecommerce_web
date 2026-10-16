@@ -51,7 +51,6 @@
             @forelse($orders as $order)
                 <div class="card order-card shadow-sm rounded-4 bg-white mb-4 overflow-hidden" data-href="{{ route('orders.show', $order->id) }}">
                     
-                    {{-- Header: Order Meta Info --}}
                     <div class="card-header bg-light border-bottom-0 py-3 px-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                         <div>
                             <span class="badge bg-dark px-3 py-2 rounded-pill font-monospace mb-2 mb-md-0">ORDER #{{ $order->tracking_number }}</span>
@@ -63,11 +62,9 @@
                         </div>
                     </div>
 
-                    {{-- Body: Visual Product List & Action --}}
                     <div class="card-body p-4">
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
                             
-                            {{-- Left: Overlapping Product Images --}}
                             <div class="d-flex align-items-center flex-wrap gap-3">
                                 @php
                                     $items = $order->items ?? collect();
@@ -78,7 +75,6 @@
                                 @if($items->count() > 0)
                                     <div class="d-flex position-relative">
                                         @foreach($displayItems as $item)
-                                            {{-- Safe check for deleted products --}}
                                             @if($item->variant && $item->variant->product)
                                                 <div class="rounded-circle shadow-sm bg-white overflow-hidden position-relative img-stack-item">
                                                     <img src="{{ $item->variant->product->image_url }}" alt="Shoe" class="product-img-stack w-100 h-100 rounded-circle">
@@ -90,7 +86,6 @@
                                             @endif
                                         @endforeach
 
-                                        {{-- If they ordered more than 3 items, show a +X badge --}}
                                         @if($remainingCount > 0)
                                             <div class="rounded-circle shadow-sm bg-dark d-flex align-items-center justify-content-center text-white fw-bold position-relative img-stack-more">
                                                 +{{ $remainingCount }}
@@ -112,7 +107,6 @@
                                 @endif
                             </div>
 
-                            {{-- Right: Status Badge & Button --}}
                             <div class="d-flex flex-column align-items-md-end gap-3 min-vw-25">
                                 @if($order->status == 'pending')
                                     <span class="badge bg-warning text-dark rounded-pill px-4 py-2 fw-medium"><i class="bi bi-hourglass-split me-1"></i> Pending</span>

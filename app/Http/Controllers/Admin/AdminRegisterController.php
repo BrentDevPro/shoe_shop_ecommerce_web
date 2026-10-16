@@ -27,7 +27,7 @@ class AdminRegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'admin', // Fixed: set role to 'admin'
+            'role' => 'admin',
         ]);
 
         Auth::login($admin);
