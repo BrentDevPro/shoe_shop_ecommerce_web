@@ -88,4 +88,41 @@ class AdminProductImageTest extends TestCase
         $this->assertTrue($product->images()->where('image_path', $oldImagePath)->doesntExist());
         $this->assertCount(2, $product->images);
     }
+
+    public function test_admin_can_create_and_update_a_product_without_a_description(): void
+    {
+        Storage::fake('public');
+        $brand = Brand::create(['name' => 'Jordan', 'slug' => 'jordan']);
+        $category = Category::create(['name' => 'Basketball', 'slug' => 'basketball']);
+        $admin = new User(User::factory()->raw(['role' => 'admin']));
+        $admin->save();
+
+        $this->actingAs($admin)
+            ->post(route('admin.products.store'), [
+                'name' => 'Jordan Air Max',
+                'price' => 8200,
+                'brand_id' => $brand->id,
+                'category_id' => $category->id,
+                'images' => [UploadedFile::fake()->create('shoe.jpg', 100, 'image/jpeg')],
+            ])
+            ->assertRedirect(route('admin.products.index'));
+
+        $product = Product::where('slug', 'jordan-air-max')->firstOrFail();
+        $this->assertNull($product->description);
+        $this->assertTrue(Storage::disk('public')->exists($product->image_path));
+
+        $this->put(route('admin.products.update', $product), [
+            'name' => 'Jordan Air Max Updated',
+            'price' => 8500,
+            'brand_id' => $brand->id,
+            'category_id' => $category->id,
+        ])->assertRedirect(route('admin.products.index'));
+
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'name' => 'Jordan Air Max Updated',
+            'price' => 8500,
+            'description' => null,
+        ]);
+    }
 }

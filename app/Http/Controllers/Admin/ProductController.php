@@ -74,7 +74,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'images' => 'required|array|min:1',
             'images.*' => 'image|max:2048',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
         ]);
 
         $images = $request->file('images');
@@ -131,7 +131,7 @@ class ProductController extends Controller
                 Rule::exists('product_images', 'id')->where(fn ($query) => $query->where('product_id', $product->id)),
             ],
             'main_image_index' => ['nullable', 'integer', 'min:0', Rule::in(array_keys($uploadedImages))],
-            'description' => 'required|string',
+            'description' => 'nullable|string',
         ]);
 
         $oldMainImagePath = $product->image_path;

@@ -20,6 +20,17 @@
     @csrf
     @method('PUT')
 
+    @if($errors->any())
+        <div class="alert alert-danger" role="alert">
+            <p class="fw-bold mb-1">The shoe could not be saved:</p>
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="row g-4 mb-5">
         <div class="col-lg-8">
             <div class="card metric-card bg-white h-100">
@@ -30,18 +41,18 @@
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
                             <label class="form-label text-uppercase small fw-bold text-muted tracking-wide ms-2">Shoe Name</label>
-                            <input type="text" name="name" class="form-control rounded-pill bg-light border-0 px-4 py-2" value="{{ old('name', $product->name) }}" required>
+                            <input type="text" name="name" class="form-control rounded-pill bg-light border-0 px-4 py-2 @error('name') is-invalid @enderror" value="{{ old('name', $product->name) }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label text-uppercase small fw-bold text-muted tracking-wide ms-2">Price (₱)</label>
-                            <input type="number" step="0.01" name="price" class="form-control rounded-pill bg-light border-0 px-4 py-2" value="{{ old('price', $product->price) }}" required>
+                            <input type="number" step="0.01" name="price" class="form-control rounded-pill bg-light border-0 px-4 py-2 @error('price') is-invalid @enderror" value="{{ old('price', $product->price) }}" required>
                         </div>
                     </div>
 
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
                             <label class="form-label text-uppercase small fw-bold text-muted tracking-wide ms-2">Brand</label>
-                            <select name="brand_id" class="form-select rounded-pill bg-light border-0 px-4 py-2 text-dark" required>
+                            <select name="brand_id" class="form-select rounded-pill bg-light border-0 px-4 py-2 text-dark @error('brand_id') is-invalid @enderror" required>
                                 @foreach($brands as $brand)
                                     <option value="{{ $brand->id }}" {{ (old('brand_id', $product->brand_id) == $brand->id) ? 'selected' : '' }}>{{ $brand->name }}</option>
                                 @endforeach
@@ -49,7 +60,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label text-uppercase small fw-bold text-muted tracking-wide ms-2">Category</label>
-                            <select name="category_id" class="form-select rounded-pill bg-light border-0 px-4 py-2 text-dark" required>
+                            <select name="category_id" class="form-select rounded-pill bg-light border-0 px-4 py-2 text-dark @error('category_id') is-invalid @enderror" required>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ (old('category_id', $product->category_id) == $category->id) ? 'selected' : '' }}>{{ $category->name }}</option>
                                 @endforeach
@@ -59,7 +70,7 @@
 
                     <div>
                         <label class="form-label text-uppercase small fw-bold text-muted tracking-wide ms-2">Description</label>
-                        <textarea name="description" class="form-control rounded-4 bg-light border-0 p-4" rows="5">{{ old('description', $product->description) }}</textarea>
+                        <textarea name="description" class="form-control rounded-4 bg-light border-0 p-4 @error('description') is-invalid @enderror" rows="5">{{ old('description', $product->description) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -97,7 +108,7 @@
 
                     <div class="text-start">
                         <label for="imageInput" class="form-label fw-bold text-uppercase small text-muted tracking-wide ms-2">Add Product Images</label>
-                        <input type="file" name="images[]" id="imageInput" class="form-control rounded-pill bg-light border-0 px-3 py-2" accept="image/*" multiple>
+                        <input type="file" name="images[]" id="imageInput" class="form-control rounded-pill bg-light border-0 px-3 py-2 @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror" accept="image/*" multiple>
                         <input type="hidden" name="main_image_id" id="mainImageId">
                         <input type="hidden" name="main_image_index" id="mainImageIndex">
                     </div>

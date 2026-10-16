@@ -19,6 +19,17 @@
 <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
+    @if($errors->any())
+        <div class="alert alert-danger" role="alert">
+            <p class="fw-bold mb-1">The shoe could not be saved:</p>
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="row g-4 mb-5">
         <div class="col-lg-8">
             <div class="card metric-card bg-white h-100">
@@ -40,19 +51,19 @@
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
                             <label class="form-label text-uppercase small fw-bold text-muted tracking-wide ms-2">Brand</label>
-                            <select name="brand_id" class="form-select rounded-pill bg-light border-0 px-4 py-2 text-dark" required style="cursor: pointer;">
-                                <option value="" disabled selected>Select a brand...</option>
+                            <select name="brand_id" class="form-select rounded-pill bg-light border-0 px-4 py-2 text-dark @error('brand_id') is-invalid @enderror" required style="cursor: pointer;">
+                                <option value="" disabled {{ old('brand_id') ? '' : 'selected' }}>Select a brand...</option>
                                 @foreach($brands as $brand)
-                                    <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                    <option value="{{ $brand->id }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label text-uppercase small fw-bold text-muted tracking-wide ms-2">Category</label>
-                            <select name="category_id" class="form-select rounded-pill bg-light border-0 px-4 py-2 text-dark" required style="cursor: pointer;">
-                                <option value="" disabled selected>Select a category...</option>
+                            <select name="category_id" class="form-select rounded-pill bg-light border-0 px-4 py-2 text-dark @error('category_id') is-invalid @enderror" required style="cursor: pointer;">
+                                <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Select a category...</option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -84,7 +95,7 @@
                     
                     <div class="text-start">
                         <label class="form-label fw-bold text-uppercase small text-muted tracking-wide ms-2">Upload File(s)</label>
-                        <input type="file" name="images[]" id="imageInput" class="form-control rounded-pill bg-light border-0 px-3 py-2 @error('images') is-invalid @enderror" accept="image/*" multiple required>
+                        <input type="file" name="images[]" id="imageInput" class="form-control rounded-pill bg-light border-0 px-3 py-2 @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror" accept="image/*" multiple required>
                         <small class="text-muted ms-2 mt-2 d-block lh-sm" style="font-size: 0.75rem;">Hold CTRL/CMD to select multiple files at once. The first image will be the Main thumbnail.</small>
                     </div>
                 </div>
