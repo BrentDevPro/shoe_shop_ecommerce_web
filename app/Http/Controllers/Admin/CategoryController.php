@@ -28,6 +28,9 @@ class CategoryController extends Controller
             'slug' => Str::slug($request->name),
         ]);
 
+
+        
+
         return back()->with('success', 'New category added successfully.');
     }
 
